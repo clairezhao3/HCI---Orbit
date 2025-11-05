@@ -16,7 +16,7 @@ This assignment demonstrates that our technical foundation — including mapping
 ## Team Members
 - Jeslyn Guo  
 - Claire Zhao 
-- Rachel Domannnnnn
+- Rachel Doman
 
 ---
 
