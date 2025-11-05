@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maps Prototype</title>
+
+  <!-- Basic reset + mobile "device" frame -->
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #0b0f14; /* dark backdrop */
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Center the phone on screen */
+    .stage {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    /* Phone frame (390x844 ~ iPhone 12) */
+    .phone {
+      width: 390px;
+      height: 844px;
+      background: #1f2a36;            /* app background */
+      border-radius: 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.04);
+      overflow: hidden;
+      position: relative;
+      color: #e6edf3;
+    }
+
+    /* Optional fake status bar spacing */
+    .safe-top { height: 44px; }
+
+    /* Your app root */
+    #root {
+      height: calc(100% - 44px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .hello {
+      font-size: 28px;
+      letter-spacing: 0.2px;
+    }
+
+    /* bottom home-indicator bar look */
+    .home-indicator {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 5px;
+      background: rgba(255,255,255,0.35);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <div class="safe-top"></div>
+      <div id="root"></div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- React 18 + ReactDOM (UMD builds) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel to allow JSX in the browser (good for quick prototypes) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Your app code (JSX compiled by Babel in the browser) -->
+  <script type="text/babel" src="./main.js" data-presets="react,env"></script>
+</body>
+</html>
