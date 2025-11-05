@@ -13,7 +13,7 @@ This assignment demonstrates that our technical foundation — including mapping
 
 ---
 
-## eam Members
+## Team Members
 - Jeslyn Guo  
 - Claire Zhao 
 - Rachel Doman
