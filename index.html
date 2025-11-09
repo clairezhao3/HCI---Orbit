@@ -346,6 +346,199 @@
       font-weight: 600;
     }
 
+    /* Bottom sheet */
+    .bottom-sheet {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .bottom-sheet .sheet-surface {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(33,67,95,0.97);
+      border-radius: 28px 28px 0 0;
+      padding: 16px 20px 32px;
+      box-shadow: 0 -20px 40px rgba(0,0,0,0.45);
+      transform: translateY(100%);
+      transition: transform 220ms ease;
+      max-height: calc(100% - 44px);
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    .bottom-sheet.closed .sheet-surface {
+      pointer-events: none;
+    }
+
+    .bottom-sheet.peek .sheet-surface {
+      transform: translateY(calc(100% - 320px));
+    }
+
+    .bottom-sheet.full .sheet-surface {
+      transform: translateY(44px);
+      overflow-y: auto;
+    }
+
+    .bottom-sheet.open {
+      pointer-events: auto;
+    }
+
+    .sheet-handle {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+      cursor: grab;
+    }
+
+    .sheet-handle span {
+      width: 64px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .sheet-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .sheet-subtitle {
+      font-size: 15px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .sheet-icon-stack {
+      display: grid;
+      grid-auto-flow: column;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      background: rgba(12,18,25,0.6);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: var(--accent-light);
+      font-size: 12px;
+      padding: 6px;
+      min-width: 54px;
+    }
+
+    .icon-btn span.material-symbols-outlined {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .sheet-info {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .sheet-address {
+      margin-bottom: 16px;
+    }
+
+    .sheet-quick-actions {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .quick-action {
+      background: rgba(12,18,25,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      color: var(--accent-light);
+      display: grid;
+      place-items: center;
+      padding: 10px 4px;
+      font-size: 12px;
+      gap: 4px;
+    }
+
+    .quick-action .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    .sheet-comments-header {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .sheet-comments textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(12,18,25,0.6);
+      color: var(--accent-light);
+      padding: 10px;
+      font-family: inherit;
+      margin-bottom: 14px;
+      resize: none;
+    }
+
+    .comment-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+
+    .comment-body {
+      margin: 4px 0;
+      font-size: 15px;
+    }
+
+    .comment-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .comment-meta .link-button {
+      padding: 0;
+      font-size: inherit;
+    }
+
     /* Comment bubble "pin" */
     .pin {
     position: absolute;
