@@ -133,7 +133,7 @@ const KeyboardContext = React.createContext({
 });
 
 function Keyboard({ visible, onHeightChange, onRequestClose }) {
-  const height = 291;
+  const height = 210;
   const [isShifted, setIsShifted] = React.useState(false);
 
   const setNativeValue = (element, value) => {
@@ -225,19 +225,21 @@ function Keyboard({ visible, onHeightChange, onRequestClose }) {
     <div style={{
       position: 'fixed',
       bottom: 0,
-      left: 0,
-      right: 0,
+      left: '50%',
+      width: 390,
       height: height,
       background: 'rgba(210, 213, 219, 0.98)',
       backdropFilter: 'blur(20px)',
       borderTop: '1px solid rgba(0,0,0,0.1)',
-      padding: '8px 4px 8px 4px',
+      padding: '8px 4px 4px 4px',
       display: 'flex',
       flexDirection: 'column',
-      gap: 8,
+      gap: 6,
       zIndex: 10000,
       transition: 'transform 0.3s ease',
-      transform: visible ? 'translateY(0)' : 'translateY(100%)',
+      transform: visible ? 'translate(-50%, 0)' : 'translate(-50%, 100%)',
+      borderRadius: '18px 18px 0 0',
+      boxShadow: '0 -10px 40px rgba(0,0,0,0.35)',
     }}>
       {keys.map((row, i) => (
         <div key={i} style={{
@@ -259,7 +261,7 @@ function Keyboard({ visible, onHeightChange, onRequestClose }) {
                     onClick={() => handleKeyTap(key)}
                     style={{
                       flex: isWide ? 3 : isAction ? 1.5 : 1,
-                      height: 42,
+                      height: 38,
                       background: activeShift
                         ? '#fff'
                         : isAction
