@@ -1,4 +1,4 @@
-function Screen({ tab, renderMap }) {
+function Screen({ tab, renderMap, savedPlaces, onRemoveSaved }) {
   const labels = {
     map: "Map",
     places: "My Places",
@@ -16,8 +16,8 @@ function Screen({ tab, renderMap }) {
 
   if (tab === "places") {
     return (
-      <div className="screen screen-content">
-        <MyPlacesScreen />
+      <div className="screen screen-places" aria-label="Saved places">
+        <MyPlacesScreen savedPlaces={savedPlaces} onRemoveSaved={onRemoveSaved} />
       </div>
     );
   }
@@ -74,15 +74,43 @@ function App() {
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [sheetOpen, setSheetOpen] = React.useState(false);
+    const [savedPlaces, setSavedPlaces] = React.useState([]);
+
+    const handleToggleSavePlace = React.useCallback((venue) => {
+      setSavedPlaces((prev) => {
+        const exists = prev.find((p) => p.id === venue.id);
+        if (exists) {
+          return prev.filter((p) => p.id !== venue.id);
+        }
+        return [
+          ...prev,
+          {
+            id: venue.id,
+            name: venue.name,
+            details: venue.details,
+          },
+        ];
+      });
+    }, []);
+
+    const handleRemoveSaved = React.useCallback((id) => {
+      setSavedPlaces((prev) => prev.filter((p) => p.id !== id));
+    }, []);
 
     return (
         <>
         <KeyboardContext.Provider value={{ setKeyboardVisible, keyboardHeight }}>
           <Screen
             tab={tab}
+            savedPlaces={savedPlaces}
+            onRemoveSaved={handleRemoveSaved}
             renderMap={() =>
               tab === "map" ? (
-                <MapExperience onSheetVisibilityChange={setSheetOpen} />
+                <MapExperience
+                  onSheetVisibilityChange={setSheetOpen}
+                  savedPlaces={savedPlaces}
+                  onToggleSavePlace={handleToggleSavePlace}
+                />
               ) : null
             }
           />
@@ -385,97 +413,47 @@ const NEARBY_CATEGORIES = [
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
 
-const SAVED_PLACES = [
-  {
-    id: "citizens",
-    name: "Citizens Bank Park",
-    event: "Concert with The Lumineers",
-    date: "09/19/2025",
-    time: "9:00 PM EST",
-    address: "One Citizens Bank Way, Philadelphia, PA 19148",
-    alerts: ["Event starts in 3 hrs", "2 new comments"],
-  },
-  {
-    id: "lincoln-field",
-    name: "Lincoln Financial Field",
-    event: "Eagles Open Practice",
-    date: "09/20/2025",
-    time: "10:00 AM EST",
-    address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
-    alerts: ["Alert on", "New replies"],
-  },
-  {
-    id: "cira-green",
-    name: "Cira Green",
-    event: "Sunset Yoga Meetup",
-    date: "09/22/2025",
-    time: "6:30 PM EST",
-    address: "129 S 30th St, Philadelphia, PA 19104",
-    alerts: ["Waitlist open"],
-  },
-];
-
-function MyPlacesScreen() {
-  return (
-    <div className="my-places">
-      <div className="my-places-header">
-        <div>
-          <div className="title">My Places</div>
-          <div className="my-places-subtitle">
-            Keep tabs on saved venues and alerts.
-          </div>
-        </div>
-        <button className="pill-btn">
-          <span className="material-symbols-outlined">add</span>
-          Add Place
-        </button>
+function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
+  if (!savedPlaces || savedPlaces.length === 0) {
+    return (
+      <div>
+        <div className="title" style={{ marginBottom: 10 }}>My Places</div>
+        <p style={{ opacity: 0.75 }}>
+          Save a venue from the map to see it listed here for quick access.
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div style={{ width: "100%" }}>
+      <div className="title" style={{ marginBottom: 16 }}>My Places</div>
       <ul className="my-places-list">
-        {SAVED_PLACES.map((place) => (
-          <li key={place.id} className="my-place-card">
-            <div className="my-place-card-top">
-              <div>
-                <div className="place-name">{place.name}</div>
-                <div className="place-event">{place.event}</div>
-                <div className="place-divider" />
-              </div>
-              <div className="place-alerts">
-                {place.alerts.map((alert, i) => (
-                  <span key={i} className="alert-chip">
-                    {alert}
-                  </span>
-                ))}
+        {savedPlaces.map((place) => (
+          <li key={place.id} className="saved-card">
+            <div>
+              <div className="saved-card-name">{place.name}</div>
+              <div className="saved-card-meta">
+                {place.details?.event && <div>{place.details.event}</div>}
+                <div>
+                  Date {place.details?.date} · Time {place.details?.time}
+                </div>
+                <div>{place.details?.address}</div>
               </div>
             </div>
-            <div className="place-meta">
-              <span>
-                <strong>Date</strong> {place.date}
-              </span>
-              <span>
-                <strong>Time</strong> {place.time}
-              </span>
-            </div>
-            <div className="place-address">{place.address}</div>
-            <div className="place-actions">
-              <button className="outline-btn">
-                <span className="material-symbols-outlined">language</span>
-                Details
-              </button>
-              <button className="outline-btn">
-                <span className="material-symbols-outlined">bookmark_added</span>
-                Saved
-              </button>
-              <button className="outline-btn">
-                <span className="material-symbols-outlined">notifications_active</span>
-                Alerts On
-              </button>
-            </div>
+            <button
+              className="outline-btn small"
+              onClick={() => onRemoveSaved(place.id)}
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
 
 function SearchOverlay() {
   const [open, setOpen] = React.useState(false);
@@ -580,7 +558,7 @@ function SearchOverlay() {
   );
 }
 
-function MapExperience({ onSheetVisibilityChange }) {
+function MapExperience({ onSheetVisibilityChange, savedPlaces = [], onToggleSavePlace }) {
   const [venues, setVenues] = React.useState(INITIAL_VENUES);
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
@@ -848,6 +826,10 @@ function MapExperience({ onSheetVisibilityChange }) {
     }));
   };
 
+  const isSelectedSaved = selectedVenue
+    ? savedPlaces.some((p) => p.id === selectedVenue.id)
+    : false;
+
   return (
     <div className="map-layout">
       <SearchOverlay />
@@ -864,6 +846,8 @@ function MapExperience({ onSheetVisibilityChange }) {
           onAddReply={handleAddReply}
           onVote={handleVote}
           userVotes={userVotes}
+          onToggleSave={onToggleSavePlace}
+          isSaved={isSelectedSaved}
         />
       </div>
     </div>
@@ -1164,7 +1148,7 @@ function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment,
   );
 }
 
-function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes }) {
+function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes, onToggleSave, isSaved }) {
   const dragRef = React.useRef({ startY: 0, state: "closed" });
   const [commentText, setCommentText] = React.useState("");
   const [isCommentFocused, setIsCommentFocused] = React.useState(false);
@@ -1259,9 +1243,15 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
                 <span className="material-symbols-outlined">ios_share</span>
                 <span>Share</span>
               </button>
-              <button className="icon-btn" aria-label="Save">
-                <span className="material-symbols-outlined">bookmark_add</span>
-                <span>Save</span>
+              <button
+                className="icon-btn"
+                aria-label="Save place"
+                onClick={() => onToggleSave?.(venue)}
+              >
+                <span className="material-symbols-outlined">
+                  {isSaved ? "bookmark_added" : "bookmark_add"}
+                </span>
+                <span>{isSaved ? "Saved" : "Save"}</span>
               </button>
               <button className="icon-btn" aria-label="Alert">
                 <span className="material-symbols-outlined">notifications</span>
