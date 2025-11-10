@@ -1147,6 +1147,7 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
           <div className="sheet-header">
             <div>
               <div className="sheet-title">{venue?.name}</div>
+              <div className="sheet-title-divider" />
               {details.event && (
                 <div className="sheet-subtitle">
                   Active Event: {details.event}

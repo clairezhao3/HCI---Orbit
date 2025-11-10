@@ -419,8 +419,14 @@
     .sheet-header {
       display: flex;
       justify-content: space-between;
-      gap: 18px;
+      gap: 24px;
       margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .sheet-header > div:first-child {
+      flex: 1;
+      max-width: 65%;
     }
 
     .sheet-title {
@@ -434,26 +440,35 @@
       margin-top: 4px;
     }
 
+    .sheet-title-divider {
+      width: 60px;
+      height: 2px;
+      background: rgba(255,255,255,0.6);
+      margin-top: 10px;
+    }
+
     .sheet-icon-stack {
       display: grid;
-      grid-auto-flow: column;
+      grid-template-columns: repeat(2, minmax(0, auto));
       gap: 10px;
+      justify-items: flex-end;
     }
 
     .icon-btn {
       display: grid;
       place-items: center;
-      background: rgba(12,18,25,0.6);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
+      background: rgba(12,18,25,0.5);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
       color: var(--accent-light);
-      font-size: 12px;
-      padding: 6px;
-      min-width: 54px;
+      font-size: 11px;
+      padding: 10px 14px;
+      min-width: 72px;
+      gap: 2px;
     }
 
     .icon-btn span.material-symbols-outlined {
-      font-size: 20px;
+      font-size: 22px;
       margin-bottom: 2px;
     }
 
