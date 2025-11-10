@@ -85,6 +85,7 @@ function App() {
         <Keyboard 
           visible={keyboardVisible} 
           onHeightChange={setKeyboardHeight}
+          onRequestClose={() => setKeyboardVisible(false)}
         />
         </>
     );
@@ -95,12 +96,85 @@ const KeyboardContext = React.createContext({
   keyboardHeight: 0,
 });
 
-function Keyboard({ visible, onHeightChange }) {
+function Keyboard({ visible, onHeightChange, onRequestClose }) {
   const height = 291;
+  const [isShifted, setIsShifted] = React.useState(false);
+
+  const setNativeValue = (element, value) => {
+    if (!element) return;
+    const prototype = Object.getPrototypeOf(element);
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
+    descriptor?.set?.call(element, value);
+  };
+
+  const insertText = (text) => {
+    const target = document.activeElement;
+    if (!target || typeof target.value !== "string") return;
+    const start = target.selectionStart ?? target.value.length;
+    const end = target.selectionEnd ?? start;
+    const nextValue =
+      target.value.slice(0, start) + text + target.value.slice(end);
+    setNativeValue(target, nextValue);
+    const cursor = start + text.length;
+    target.setSelectionRange(cursor, cursor);
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+  
+  const handleBackspace = () => {
+    const target = document.activeElement;
+    if (!target || typeof target.value !== "string") return;
+    const start = target.selectionStart ?? target.value.length;
+    const end = target.selectionEnd ?? start;
+    if (start === 0 && end === 0) return;
+    const deletionStart = start === end ? start - 1 : start;
+    const nextValue =
+      target.value.slice(0, deletionStart) + target.value.slice(end);
+    setNativeValue(target, nextValue);
+    const cursor = Math.max(deletionStart, 0);
+    target.setSelectionRange(cursor, cursor);
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+  
+  const handleKeyTap = (key) => {
+    if (key === 'return') {
+      onRequestClose?.();
+      const target = document.activeElement;
+      target?.blur();
+      return;
+    }
+    if (key === 'backspace') {
+      handleBackspace();
+      return;
+    }
+    if (key === 'space') {
+      insertText(' ');
+      return;
+    }
+    if (key === 'shift') {
+      setIsShifted((prev) => !prev);
+      return;
+    }
+    if (key === '123') {
+      return;
+    }
+    if (key.length === 1) {
+      const char = isShifted ? key.toUpperCase() : key.toLowerCase();
+      insertText(char);
+      if (isShifted) {
+        setIsShifted(false);
+      }
+    }
+  };
   
   React.useEffect(() => {
     onHeightChange(visible ? height : 0);
   }, [visible, height, onHeightChange]);
+
+  React.useEffect(() => {
+    if (!visible) {
+      setIsShifted(false);
+    }
+  }, [visible]);
 
   if (!visible) return null;
 
@@ -138,30 +212,37 @@ function Keyboard({ visible, onHeightChange }) {
           paddingRight: i === 1 ? 20 : 0,
         }}>
           {row.map(key => {
-            const isWide = key === 'space';
-            const isAction = ['shift', 'backspace', '123', 'return'].includes(key);
-            
-            return (
-              <button
-                key={key}
-                style={{
-                  flex: isWide ? 3 : isAction ? 1.5 : 1,
-                  height: 42,
-                  background: isAction ? 'rgba(174, 179, 190, 0.95)' : 'white',
-                  border: 0,
-                  borderRadius: 5,
-                  fontSize: key === 'space' ? 14 : 20,
-                  fontWeight: 400,
-                  color: '#000',
-                  boxShadow: '0 1px 0 rgba(0,0,0,0.1)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+                const isWide = key === 'space';
+                const isAction = ['shift', 'backspace', '123', 'return'].includes(key);
+                const isShiftKey = key === 'shift';
+                const activeShift = isShiftKey && isShifted;
+                return (
+                  <button
+                    key={key}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleKeyTap(key)}
+                    style={{
+                      flex: isWide ? 3 : isAction ? 1.5 : 1,
+                      height: 42,
+                      background: activeShift
+                        ? '#fff'
+                        : isAction
+                        ? 'rgba(174, 179, 190, 0.95)'
+                        : 'white',
+                      border: 0,
+                      borderRadius: 5,
+                      fontSize: key === 'space' ? 14 : 20,
+                      fontWeight: activeShift ? 700 : 400,
+                      color: activeShift ? '#182F45' : '#000',
+                      boxShadow: '0 1px 0 rgba(0,0,0,0.1)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
                 {key === 'backspace' ? '⌫' : 
-                 key === 'shift' ? '⇧' :
+                 key === 'shift' ? (activeShift ? '⬆︎' : '⇧') :
                  key === 'return' ? 'return' :
                  key === 'space' ? 'space' : key}
               </button>
@@ -305,12 +386,15 @@ function SearchOverlay() {
   React.useEffect(() => {
     if (open && inputRef.current) {
       inputRef.current.focus();
+      setKeyboardVisible(true);
     }
-  }, [open]);
-
-  React.useEffect(() => {
-    setKeyboardVisible(open);
   }, [open, setKeyboardVisible]);
+
+  const handleCancel = () => {
+    setOpen(false);
+    setQuery("");
+    setKeyboardVisible(false);
+  };
 
   const list = query
     ? RECENT_PLACES.filter((r) =>
@@ -321,26 +405,25 @@ function SearchOverlay() {
   const card = (
     <div className="search-card">
       <div className="search-input-row">
-        <span className="material-symbols-outlined search-icon">search</span>
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search Maps"
-          aria-label="Search Maps"
-        />
-        <button
-          type="button"
-          className="search-cancel"
-          onClick={() => {
-            setOpen(false);
-            setQuery("");
-          }}
-        >
-          Cancel
-        </button>
-      </div>
+          <span className="material-symbols-outlined search-icon">search</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search Maps"
+            aria-label="Search Maps"
+            onFocus={() => setKeyboardVisible(true)}
+            onBlur={() => setKeyboardVisible(false)}
+          />
+          <button
+            type="button"
+            className="search-cancel"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
       <div className="divider" />
       <div className="recents-header">
         <span className="title">Recents</span>
