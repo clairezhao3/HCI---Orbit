@@ -14,6 +14,14 @@ function Screen({ tab, renderMap }) {
     );
   }
 
+  if (tab === "places") {
+    return (
+      <div className="screen screen-content">
+        <MyPlacesScreen />
+      </div>
+    );
+  }
+
   return (
     <div className="screen">
       <div className="title" style={{ fontSize: 22, marginBottom: 6 }}>
@@ -376,6 +384,98 @@ const NEARBY_CATEGORIES = [
   { id: 3, icon: "fastfood", label: "Fast Food" },
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
+
+const SAVED_PLACES = [
+  {
+    id: "citizens",
+    name: "Citizens Bank Park",
+    event: "Concert with The Lumineers",
+    date: "09/19/2025",
+    time: "9:00 PM EST",
+    address: "One Citizens Bank Way, Philadelphia, PA 19148",
+    alerts: ["Event starts in 3 hrs", "2 new comments"],
+  },
+  {
+    id: "lincoln-field",
+    name: "Lincoln Financial Field",
+    event: "Eagles Open Practice",
+    date: "09/20/2025",
+    time: "10:00 AM EST",
+    address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
+    alerts: ["Alert on", "New replies"],
+  },
+  {
+    id: "cira-green",
+    name: "Cira Green",
+    event: "Sunset Yoga Meetup",
+    date: "09/22/2025",
+    time: "6:30 PM EST",
+    address: "129 S 30th St, Philadelphia, PA 19104",
+    alerts: ["Waitlist open"],
+  },
+];
+
+function MyPlacesScreen() {
+  return (
+    <div className="my-places">
+      <div className="my-places-header">
+        <div>
+          <div className="title">My Places</div>
+          <div className="my-places-subtitle">
+            Keep tabs on saved venues and alerts.
+          </div>
+        </div>
+        <button className="pill-btn">
+          <span className="material-symbols-outlined">add</span>
+          Add Place
+        </button>
+      </div>
+      <ul className="my-places-list">
+        {SAVED_PLACES.map((place) => (
+          <li key={place.id} className="my-place-card">
+            <div className="my-place-card-top">
+              <div>
+                <div className="place-name">{place.name}</div>
+                <div className="place-event">{place.event}</div>
+                <div className="place-divider" />
+              </div>
+              <div className="place-alerts">
+                {place.alerts.map((alert, i) => (
+                  <span key={i} className="alert-chip">
+                    {alert}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="place-meta">
+              <span>
+                <strong>Date</strong> {place.date}
+              </span>
+              <span>
+                <strong>Time</strong> {place.time}
+              </span>
+            </div>
+            <div className="place-address">{place.address}</div>
+            <div className="place-actions">
+              <button className="outline-btn">
+                <span className="material-symbols-outlined">language</span>
+                Details
+              </button>
+              <button className="outline-btn">
+                <span className="material-symbols-outlined">bookmark_added</span>
+                Saved
+              </button>
+              <button className="outline-btn">
+                <span className="material-symbols-outlined">notifications_active</span>
+                Alerts On
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function SearchOverlay() {
   const [open, setOpen] = React.useState(false);
