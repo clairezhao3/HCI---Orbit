@@ -906,51 +906,66 @@ function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment,
         <div className="comment-body">{comment.text}</div>
       )}
       
-      <div className="comment-meta">
-        {!isOwnComment && (
-          <>
-            <button 
-              className="link-button"
-              onClick={() => onVote(venueId, comment.id, 'up', isReply, parentCommentId)}
-              disabled={userVote === 'up'}
-              style={{ 
-                padding: 0, 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 4,
-                opacity: userVote === 'up' ? 1 : (userVote === 'down' ? 0.5 : 0.75),
-                fontWeight: userVote === 'up' ? 700 : 400,
-              }}
-            >
-              <span>▲</span> <span>{comment.upvotes}</span>
-            </button>
-            <button 
-              className="link-button"
-              onClick={() => onVote(venueId, comment.id, 'down', isReply, parentCommentId)}
-              disabled={userVote === 'down'}
-              style={{ 
-                padding: 0, 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 4,
-                opacity: userVote === 'down' ? 1 : (userVote === 'up' ? 0.5 : 0.75),
-                fontWeight: userVote === 'down' ? 700 : 400,
-              }}
-            >
-              <span>▼</span> <span>{comment.downvotes}</span>
-            </button>
-          </>
-        )}
-        {!isReply && !isOwnComment && (
+      <div 
+        className="comment-meta"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <button 
             className="link-button"
-            onClick={() => setShowReplyBox(!showReplyBox)}
+            onClick={() => onVote(venueId, comment.id, 'up', isReply, parentCommentId)}
+            disabled={userVote === 'up'}
+            style={{ 
+              padding: 0, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 4,
+              opacity: userVote === 'up' ? 1 : (userVote === 'down' ? 0.5 : 0.75),
+              fontWeight: userVote === 'up' ? 700 : 400,
+            }}
           >
-            Reply
+            <span>▲</span> <span>{comment.upvotes}</span>
           </button>
-        )}
+          <button 
+            className="link-button"
+            onClick={() => onVote(venueId, comment.id, 'down', isReply, parentCommentId)}
+            disabled={userVote === 'down'}
+            style={{ 
+              padding: 0, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 4,
+              opacity: userVote === 'down' ? 1 : (userVote === 'up' ? 0.5 : 0.75),
+              fontWeight: userVote === 'down' ? 700 : 400,
+            }}
+          >
+            <span>▼</span> <span>{comment.downvotes}</span>
+          </button>
+          {!isReply && !isOwnComment && (
+            <button 
+              className="link-button"
+              onClick={() => setShowReplyBox(!showReplyBox)}
+            >
+              Reply
+            </button>
+          )}
+          {!isReply && replyCount > 0 && (
+            <button 
+              className="link-button"
+              onClick={() => setShowReplies(!showReplies)}
+            >
+              {showReplies ? 'Hide' : 'View'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+            </button>
+          )}
+        </div>
         {isOwnComment && !isEditing && (
-          <>
+          <div style={{ display: 'flex', gap: 10 }}>
             <button 
               className="link-button"
               onClick={() => setIsEditing(true)}
@@ -964,15 +979,7 @@ function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment,
             >
               Delete
             </button>
-          </>
-        )}
-        {!isReply && replyCount > 0 && (
-          <button 
-            className="link-button"
-            onClick={() => setShowReplies(!showReplies)}
-          >
-            {showReplies ? 'Hide' : 'View'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
-          </button>
+          </div>
         )}
       </div>
       
