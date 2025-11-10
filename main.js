@@ -63,13 +63,105 @@ function NavBar({ value, onChange }) {
 
 function App() {
     const [tab, setTab] = React.useState("map");
+    const [keyboardVisible, setKeyboardVisible] = React.useState(false);
+    const [keyboardHeight, setKeyboardHeight] = React.useState(0);
 
     return (
         <>
         <Screen tab={tab} />
         <NavBar value={tab} onChange={setTab} />
+        <Keyboard 
+          visible={keyboardVisible} 
+          onHeightChange={setKeyboardHeight}
+        />
+        <KeyboardContext.Provider value={{ setKeyboardVisible, keyboardHeight }}>
+          {tab === "map" && <MapExperience />}
+        </KeyboardContext.Provider>
         </>
     );
+}
+
+const KeyboardContext = React.createContext({
+  setKeyboardVisible: () => {},
+  keyboardHeight: 0,
+});
+
+function Keyboard({ visible, onHeightChange }) {
+  const height = 291;
+  
+  React.useEffect(() => {
+    onHeightChange(visible ? height : 0);
+  }, [visible, height, onHeightChange]);
+
+  if (!visible) return null;
+
+  const keys = [
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ['shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'backspace'],
+    ['123', 'space', 'return']
+  ];
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: height,
+      background: 'rgba(210, 213, 219, 0.98)',
+      backdropFilter: 'blur(20px)',
+      borderTop: '1px solid rgba(0,0,0,0.1)',
+      padding: '8px 4px 8px 4px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      zIndex: 10000,
+      transition: 'transform 0.3s ease',
+      transform: visible ? 'translateY(0)' : 'translateY(100%)',
+    }}>
+      {keys.map((row, i) => (
+        <div key={i} style={{
+          display: 'flex',
+          gap: 6,
+          justifyContent: 'center',
+          paddingLeft: i === 1 ? 20 : 0,
+          paddingRight: i === 1 ? 20 : 0,
+        }}>
+          {row.map(key => {
+            const isWide = key === 'space';
+            const isAction = ['shift', 'backspace', '123', 'return'].includes(key);
+            
+            return (
+              <button
+                key={key}
+                style={{
+                  flex: isWide ? 3 : isAction ? 1.5 : 1,
+                  height: 42,
+                  background: isAction ? 'rgba(174, 179, 190, 0.95)' : 'white',
+                  border: 0,
+                  borderRadius: 5,
+                  fontSize: key === 'space' ? 14 : 20,
+                  fontWeight: 400,
+                  color: '#000',
+                  boxShadow: '0 1px 0 rgba(0,0,0,0.1)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {key === 'backspace' ? '⌫' : 
+                 key === 'shift' ? '⇧' :
+                 key === 'return' ? 'return' :
+                 key === 'space' ? 'space' : key}
+              </button>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 // ---------- Utilities ----------
@@ -91,7 +183,7 @@ const INITIAL_VENUES = [
       name: "Citizens Bank Park",
       xPct: 57,
       yPct: 26,
-      count: 547,
+      count: 10,
       details: {
         event: "Concert with The Lumineers",
         date: "09/19/2025",
@@ -99,9 +191,19 @@ const INITIAL_VENUES = [
         address: "One Citizens Bank Way, Philadelphia, PA 19148",
       },
       comments: [
-        { id: "c1", author: "David", text: "First opener just started!", upvotes: 271, downvotes: 1, time: "9:12pm" },
-        { id: "c2", author: "Mary", text: "I'm at 314 if anyone wants to meet up!", upvotes: 202, downvotes: 4, time: "9:33pm", replies: 42 },
-        { id: "c3", author: "Annie", text: "Any recommendations for parking?", upvotes: 189, downvotes: 0, time: "9:02pm" },
+        { id: "c1", author: "David", text: "First opener just started!", upvotes: 271, downvotes: 1, time: "9:12pm", replies: [] },
+        { id: "c2", author: "Mary", text: "I'm at 314 if anyone wants to meet up!", upvotes: 202, downvotes: 4, time: "9:33pm", replies: [
+          { id: "r1", author: "John", text: "I'm nearby! Section 312", upvotes: 15, downvotes: 0, time: "9:35pm" },
+          { id: "r2", author: "Sarah", text: "Me too! Let's meet at the concession stand", upvotes: 8, downvotes: 0, time: "9:37pm" },
+        ]},
+        { id: "c3", author: "Annie", text: "Any recommendations for parking?", upvotes: 189, downvotes: 0, time: "9:02pm", replies: [] },
+        { id: "c4", author: "Mike", text: "Sound quality is amazing tonight!", upvotes: 156, downvotes: 2, time: "9:15pm", replies: [] },
+        { id: "c5", author: "Lisa", text: "Merch line is crazy long", upvotes: 98, downvotes: 0, time: "8:45pm", replies: [] },
+        { id: "c6", author: "Tom", text: "Best concert I've been to this year", upvotes: 143, downvotes: 1, time: "9:40pm", replies: [] },
+        { id: "c7", author: "Emma", text: "Traffic getting in was brutal", upvotes: 67, downvotes: 3, time: "8:30pm", replies: [] },
+        { id: "c8", author: "Chris", text: "Food prices are insane but the nachos are worth it", upvotes: 89, downvotes: 5, time: "8:55pm", replies: [] },
+        { id: "c9", author: "Rachel", text: "Anyone know what time the show ends?", upvotes: 45, downvotes: 0, time: "9:05pm", replies: [] },
+        { id: "c10", author: "Steve", text: "View from section 420 is perfect!", upvotes: 112, downvotes: 1, time: "9:20pm", replies: [] },
       ],
     },
     {
@@ -117,7 +219,7 @@ const INITIAL_VENUES = [
         address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
       },
       comments: [
-        { id: "c4", author: "Rob", text: "Security lines are moving fast.", upvotes: 42, downvotes: 0, time: "9:05am" },
+        { id: "c4", author: "Rob", text: "Security lines are moving fast.", upvotes: 42, downvotes: 0, time: "9:05am", replies: [] },
       ],
     },
     {
@@ -133,7 +235,7 @@ const INITIAL_VENUES = [
         address: "3601 S Broad St, Philadelphia, PA 19148",
       },
       comments: [
-        { id: "c5", author: "Sam", text: "Crew is still setting up the track.", upvotes: 3, downvotes: 0, time: "3:10pm" },
+        { id: "c5", author: "Sam", text: "Crew is still setting up the track.", upvotes: 3, downvotes: 0, time: "3:10pm", replies: [] },
       ],
     },
 ];
@@ -189,12 +291,17 @@ function SearchOverlay() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const inputRef = React.useRef(null);
+  const { setKeyboardVisible } = React.useContext(KeyboardContext);
 
   React.useEffect(() => {
     if (open && inputRef.current) {
       inputRef.current.focus();
     }
   }, [open]);
+
+  React.useEffect(() => {
+    setKeyboardVisible(open);
+  }, [open, setKeyboardVisible]);
 
   const list = query
     ? RECENT_PLACES.filter((r) =>
@@ -283,6 +390,7 @@ function SearchOverlay() {
 
 function MapExperience() {
   const [venues, setVenues] = React.useState(INITIAL_VENUES);
+  const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
 
@@ -314,6 +422,7 @@ function MapExperience() {
             upvotes: 0,
             downvotes: 0,
             time: timeStr,
+            replies: [],
           };
           
           const updatedVenue = {
@@ -322,7 +431,6 @@ function MapExperience() {
             count: v.count + 1,
           };
           
-          // Update selected venue if it's the current one
           if (selectedVenue?.id === venueId) {
             setSelectedVenue(updatedVenue);
           }
@@ -332,6 +440,206 @@ function MapExperience() {
         return v;
       })
     );
+  };
+
+  const handleEditComment = (venueId, commentId, newText, isReply = false, parentCommentId = null) => {
+    setVenues(prevVenues => 
+      prevVenues.map(v => {
+        if (v.id === venueId) {
+          const updatedVenue = {
+            ...v,
+            comments: v.comments.map(c => {
+              if (isReply && c.id === parentCommentId) {
+                return {
+                  ...c,
+                  replies: (c.replies || []).map(r => 
+                    r.id === commentId ? { ...r, text: newText } : r
+                  ),
+                };
+              } else if (!isReply && c.id === commentId) {
+                return { ...c, text: newText };
+              }
+              return c;
+            }),
+          };
+          
+          if (selectedVenue?.id === venueId) {
+            setSelectedVenue(updatedVenue);
+          }
+          
+          return updatedVenue;
+        }
+        return v;
+      })
+    );
+  };
+
+  const handleDeleteComment = (venueId, commentId, isReply = false, parentCommentId = null) => {
+    setVenues(prevVenues => 
+      prevVenues.map(v => {
+        if (v.id === venueId) {
+          let updatedVenue;
+          
+          if (isReply) {
+            updatedVenue = {
+              ...v,
+              comments: v.comments.map(c => {
+                if (c.id === parentCommentId) {
+                  return {
+                    ...c,
+                    replies: (c.replies || []).filter(r => r.id !== commentId),
+                  };
+                }
+                return c;
+              }),
+            };
+          } else {
+            updatedVenue = {
+              ...v,
+              comments: v.comments.filter(c => c.id !== commentId),
+              count: v.count - 1,
+            };
+          }
+          
+          if (selectedVenue?.id === venueId) {
+            setSelectedVenue(updatedVenue);
+          }
+          
+          return updatedVenue;
+        }
+        return v;
+      })
+    );
+
+    setUserVotes(prev => {
+      const newVotes = { ...prev };
+      delete newVotes[commentId];
+      return newVotes;
+    });
+  };
+
+  const handleAddReply = (venueId, commentId, replyText) => {
+    setVenues(prevVenues => 
+      prevVenues.map(v => {
+        if (v.id === venueId) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+          }).toLowerCase();
+          
+          const newReply = {
+            id: `r${Date.now()}`,
+            author: "You",
+            text: replyText,
+            upvotes: 0,
+            downvotes: 0,
+            time: timeStr,
+          };
+          
+          const updatedVenue = {
+            ...v,
+            comments: v.comments.map(c => 
+              c.id === commentId 
+                ? { ...c, replies: [...(c.replies || []), newReply] }
+                : c
+            ),
+          };
+          
+          if (selectedVenue?.id === venueId) {
+            setSelectedVenue(updatedVenue);
+          }
+          
+          return updatedVenue;
+        }
+        return v;
+      })
+    );
+  };
+
+  const handleVote = (venueId, commentId, voteType, isReply = false, parentCommentId = null) => {
+    const existingVote = userVotes[commentId];
+    
+    if (existingVote === voteType) {
+      return;
+    }
+
+    setVenues(prevVenues => 
+      prevVenues.map(v => {
+        if (v.id === venueId) {
+          const updatedVenue = {
+            ...v,
+            comments: v.comments.map(c => {
+              if (isReply && c.id === parentCommentId) {
+                return {
+                  ...c,
+                  replies: (c.replies || []).map(r => {
+                    if (r.id === commentId) {
+                      let newUpvotes = r.upvotes;
+                      let newDownvotes = r.downvotes;
+                      
+                      if (existingVote === 'up') {
+                        newUpvotes--;
+                      } else if (existingVote === 'down') {
+                        newDownvotes--;
+                      }
+                      
+                      if (voteType === 'up') {
+                        newUpvotes++;
+                      } else {
+                        newDownvotes++;
+                      }
+                      
+                      return {
+                        ...r,
+                        upvotes: newUpvotes,
+                        downvotes: newDownvotes,
+                      };
+                    }
+                    return r;
+                  }),
+                };
+              } else if (!isReply && c.id === commentId) {
+                let newUpvotes = c.upvotes;
+                let newDownvotes = c.downvotes;
+                
+                if (existingVote === 'up') {
+                  newUpvotes--;
+                } else if (existingVote === 'down') {
+                  newDownvotes--;
+                }
+                
+                if (voteType === 'up') {
+                  newUpvotes++;
+                } else {
+                  newDownvotes++;
+                }
+                
+                return {
+                  ...c,
+                  upvotes: newUpvotes,
+                  downvotes: newDownvotes,
+                };
+              }
+              return c;
+            }),
+          };
+          
+          if (selectedVenue?.id === venueId) {
+            setSelectedVenue(updatedVenue);
+          }
+          
+          return updatedVenue;
+        }
+        return v;
+      })
+    );
+
+    setUserVotes(prev => ({
+      ...prev,
+      [commentId]: voteType,
+    }));
   };
 
   return (
@@ -345,6 +653,11 @@ function MapExperience() {
           onStateChange={setSheetState}
           onClose={handleClose}
           onAddComment={handleAddComment}
+          onEditComment={handleEditComment}
+          onDeleteComment={handleDeleteComment}
+          onAddReply={handleAddReply}
+          onVote={handleVote}
+          userVotes={userVotes}
         />
       </div>
     </div>
@@ -369,9 +682,284 @@ function MapStatic({ venues, onSelectVenue }) {
   );
 }
 
-function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
+function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment, onVote, userVotes, isReply = false, parentCommentId = null }) {
+  const [showReplyBox, setShowReplyBox] = React.useState(false);
+  const [replyText, setReplyText] = React.useState("");
+  const [showReplies, setShowReplies] = React.useState(false);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editText, setEditText] = React.useState(comment.text);
+  const { setKeyboardVisible } = React.useContext(KeyboardContext);
+
+  const isOwnComment = comment.author === "You";
+  const userVote = userVotes[comment.id];
+
+  React.useEffect(() => {
+    setKeyboardVisible(showReplyBox || isEditing);
+  }, [showReplyBox, isEditing, setKeyboardVisible]);
+
+  const handleSubmitReply = () => {
+    if (replyText.trim()) {
+      onAddReply(venueId, comment.id, replyText.trim());
+      setReplyText("");
+      setShowReplyBox(false);
+      setShowReplies(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (editText.trim() && editText !== comment.text) {
+      onEditComment(venueId, comment.id, editText.trim(), isReply, parentCommentId);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditText(comment.text);
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this comment?')) {
+      onDeleteComment(venueId, comment.id, isReply, parentCommentId);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      if (isEditing) {
+        handleSaveEdit();
+      } else {
+        handleSubmitReply();
+      }
+    }
+  };
+
+  const replyCount = comment.replies?.length || 0;
+
+  return (
+    <li style={{ marginLeft: isReply ? 24 : 0 }}>
+      <div className="comment-header">
+        <span className="comment-author">{comment.author}</span>
+        <span className="comment-time">{comment.time}</span>
+      </div>
+      
+      {isEditing ? (
+        <div style={{ marginTop: 4, marginBottom: 8 }}>
+          <textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onKeyDown={handleKeyPress}
+            rows="3"
+            style={{
+              width: '100%',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(12,18,25,0.6)',
+              color: 'var(--accent-light)',
+              padding: 8,
+              fontFamily: 'inherit',
+              fontSize: 15,
+              resize: 'none',
+            }}
+          />
+          <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+            <button
+              onClick={handleSaveEdit}
+              disabled={!editText.trim()}
+              style={{
+                background: editText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                color: '#182F45',
+                border: 0,
+                borderRadius: 6,
+                padding: '6px 12px',
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: editText.trim() ? 'pointer' : 'not-allowed',
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancelEdit}
+              style={{
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.75)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: 6,
+                padding: '6px 12px',
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="comment-body">{comment.text}</div>
+      )}
+      
+      <div className="comment-meta">
+        {!isOwnComment && (
+          <>
+            <button 
+              className="link-button"
+              onClick={() => onVote(venueId, comment.id, 'up', isReply, parentCommentId)}
+              disabled={userVote === 'up'}
+              style={{ 
+                padding: 0, 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 4,
+                opacity: userVote === 'up' ? 1 : (userVote === 'down' ? 0.5 : 0.75),
+                fontWeight: userVote === 'up' ? 700 : 400,
+              }}
+            >
+              <span>▲</span> <span>{comment.upvotes}</span>
+            </button>
+            <button 
+              className="link-button"
+              onClick={() => onVote(venueId, comment.id, 'down', isReply, parentCommentId)}
+              disabled={userVote === 'down'}
+              style={{ 
+                padding: 0, 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 4,
+                opacity: userVote === 'down' ? 1 : (userVote === 'up' ? 0.5 : 0.75),
+                fontWeight: userVote === 'down' ? 700 : 400,
+              }}
+            >
+              <span>▼</span> <span>{comment.downvotes}</span>
+            </button>
+          </>
+        )}
+        {!isReply && !isOwnComment && (
+          <button 
+            className="link-button"
+            onClick={() => setShowReplyBox(!showReplyBox)}
+          >
+            Reply
+          </button>
+        )}
+        {isOwnComment && !isEditing && (
+          <>
+            <button 
+              className="link-button"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </button>
+            <button 
+              className="link-button"
+              onClick={handleDelete}
+              style={{ color: 'rgba(255,100,100,0.85)' }}
+            >
+              Delete
+            </button>
+          </>
+        )}
+        {!isReply && replyCount > 0 && (
+          <button 
+            className="link-button"
+            onClick={() => setShowReplies(!showReplies)}
+          >
+            {showReplies ? 'Hide' : 'View'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+          </button>
+        )}
+      </div>
+      
+      {showReplyBox && (
+        <div style={{ marginTop: 8, position: 'relative' }}>
+          <textarea
+            placeholder="Write a reply..."
+            rows="2"
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            onKeyDown={handleKeyPress}
+            style={{
+              width: '100%',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(12,18,25,0.6)',
+              color: 'var(--accent-light)',
+              padding: 8,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              resize: 'none',
+            }}
+          />
+          <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+            <button
+              onClick={handleSubmitReply}
+              disabled={!replyText.trim()}
+              style={{
+                background: replyText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                color: '#182F45',
+                border: 0,
+                borderRadius: 6,
+                padding: '6px 12px',
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: replyText.trim() ? 'pointer' : 'not-allowed',
+              }}
+            >
+              Reply
+            </button>
+            <button
+              onClick={() => {
+                setShowReplyBox(false);
+                setReplyText("");
+              }}
+              style={{
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.75)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: 6,
+                padding: '6px 12px',
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showReplies && replyCount > 0 && (
+        <ul className="comment-list" style={{ marginTop: 12, paddingLeft: 0 }}>
+          {comment.replies.map((reply) => (
+            <Comment
+              key={reply.id}
+              comment={reply}
+              venueId={venueId}
+              onAddReply={onAddReply}
+              onEditComment={onEditComment}
+              onDeleteComment={onDeleteComment}
+              onVote={onVote}
+              userVotes={userVotes}
+              isReply={true}
+              parentCommentId={comment.id}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes }) {
   const dragRef = React.useRef({ startY: 0, state: "closed" });
   const [commentText, setCommentText] = React.useState("");
+  const [isCommentFocused, setIsCommentFocused] = React.useState(false);
+  const { setKeyboardVisible, keyboardHeight } = React.useContext(KeyboardContext);
+
+  React.useEffect(() => {
+    setKeyboardVisible(isCommentFocused);
+  }, [isCommentFocused, setKeyboardVisible]);
 
   if (!venue && state === "closed") {
     return null;
@@ -406,6 +994,7 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
     if (commentText.trim() && venue) {
       onAddComment(venue.id, commentText.trim());
       setCommentText("");
+      setIsCommentFocused(false);
     }
   };
 
@@ -427,7 +1016,12 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
   const comments = venue?.comments || [];
 
   return (
-    <div className={sheetClass}>
+    <div 
+      className={sheetClass}
+      style={{
+        paddingBottom: keyboardHeight,
+      }}
+    >
       <div className="sheet-surface">
         <div
           className="sheet-handle"
@@ -436,108 +1030,105 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
         >
           <span />
         </div>
-        <div className="sheet-header">
-          <div>
-            <div className="sheet-title">{venue?.name}</div>
-            {details.event && (
-              <div className="sheet-subtitle">
-                Active Event: {details.event}
-              </div>
-            )}
-          </div>
-          <div className="sheet-icon-stack">
-            <button className="icon-btn" aria-label="Share">
-              <span className="material-symbols-outlined">ios_share</span>
-              <span>Share</span>
-            </button>
-            <button className="icon-btn" aria-label="Save">
-              <span className="material-symbols-outlined">bookmark_add</span>
-              <span>Save</span>
-            </button>
-            <button className="icon-btn" aria-label="Alert">
-              <span className="material-symbols-outlined">notifications</span>
-              <span>Alert</span>
-            </button>
-            <button className="icon-btn" aria-label="Close" onClick={onClose}>
-              <span className="material-symbols-outlined">close</span>
-              <span>Close</span>
-            </button>
-          </div>
-        </div>
-        <div className="sheet-info">
-          <div>
-            <div className="info-label">Date</div>
-            <div className="info-value">{details.date}</div>
-          </div>
-          <div>
-            <div className="info-label">Time</div>
-            <div className="info-value">{details.time}</div>
-          </div>
-        </div>
-        <div className="sheet-address">
-          <div className="info-label">Address</div>
-          <div className="info-value">{details.address}</div>
-        </div>
-        <div className="sheet-quick-actions">
-          {QUICK_ACTIONS.map((action) => (
-            <button key={action.id} className="quick-action">
-              <span className="material-symbols-outlined">{action.icon}</span>
-              <span>{action.label}</span>
-            </button>
-          ))}
-        </div>
-        <div className="sheet-comments">
-          <div className="sheet-comments-header">Comment</div>
-          <div style={{ position: 'relative', marginBottom: 14 }}>
-            <textarea
-              placeholder="Share an update..."
-              rows="3"
-              aria-label="Add a comment"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={handleKeyPress}
-            />
-            <button
-              onClick={handleSubmitComment}
-              disabled={!commentText.trim()}
-              style={{
-                position: 'absolute',
-                right: 10,
-                bottom: 10,
-                background: commentText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
-                color: '#182F45',
-                border: 0,
-                borderRadius: 8,
-                padding: '8px 16px',
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: commentText.trim() ? 'pointer' : 'not-allowed',
-              }}
-            >
-              Post
-            </button>
-          </div>
-          <ul className="comment-list">
-            {comments.map((c) => (
-              <li key={c.id}>
-                <div className="comment-header">
-                  <span className="comment-author">{c.author}</span>
-                  <span className="comment-time">{c.time}</span>
+        <div className="sheet-content">
+          <div className="sheet-header">
+            <div>
+              <div className="sheet-title">{venue?.name}</div>
+              {details.event && (
+                <div className="sheet-subtitle">
+                  Active Event: {details.event}
                 </div>
-                <div className="comment-body">{c.text}</div>
-                <div className="comment-meta">
-                  <span className="vote">▲ {c.upvotes}</span>
-                  <span className="vote">▼ {c.downvotes}</span>
-                  <button className="link-button">Reply</button>
-                  {c.replies ? (
-                    <button className="link-button">
-                      View {c.replies} replies
-                    </button>
-                  ) : null}
-                </div>
-              </li>
+              )}
+            </div>
+            <div className="sheet-icon-stack">
+              <button className="icon-btn" aria-label="Share">
+                <span className="material-symbols-outlined">ios_share</span>
+                <span>Share</span>
+              </button>
+              <button className="icon-btn" aria-label="Save">
+                <span className="material-symbols-outlined">bookmark_add</span>
+                <span>Save</span>
+              </button>
+              <button className="icon-btn" aria-label="Alert">
+                <span className="material-symbols-outlined">notifications</span>
+                <span>Alert</span>
+              </button>
+              <button className="icon-btn" aria-label="Close" onClick={onClose}>
+                <span className="material-symbols-outlined">close</span>
+                <span>Close</span>
+              </button>
+            </div>
+          </div>
+          <div className="sheet-info">
+            <div>
+              <div className="info-label">Date</div>
+              <div className="info-value">{details.date}</div>
+            </div>
+            <div>
+              <div className="info-label">Time</div>
+              <div className="info-value">{details.time}</div>
+            </div>
+          </div>
+          <div className="sheet-address">
+            <div className="info-label">Address</div>
+            <div className="info-value">{details.address}</div>
+          </div>
+          <div className="sheet-quick-actions">
+            {QUICK_ACTIONS.map((action) => (
+              <button key={action.id} className="quick-action">
+                <span className="material-symbols-outlined">{action.icon}</span>
+                <span>{action.label}</span>
+              </button>
             ))}
-          </ul>
+          </div>
+          <div className="sheet-comments">
+            <div className="sheet-comments-header">Comment</div>
+            <div style={{ position: 'relative', marginBottom: 14 }}>
+              <textarea
+                placeholder="Share an update..."
+                rows="3"
+                aria-label="Add a comment"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={handleKeyPress}
+                onFocus={() => setIsCommentFocused(true)}
+                onBlur={() => setIsCommentFocused(false)}
+              />
+              <button
+                onClick={handleSubmitComment}
+                disabled={!commentText.trim()}
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  bottom: 10,
+                  background: commentText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                  color: '#182F45',
+                  border: 0,
+                  borderRadius: 8,
+                  padding: '8px 16px',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: commentText.trim() ? 'pointer' : 'not-allowed',
+                }}
+              >
+                Post
+              </button>
+            </div>
+            <ul className="comment-list">
+              {comments.map((c) => (
+                <Comment
+                  key={c.id}
+                  comment={c}
+                  venueId={venue.id}
+                  onAddReply={onAddReply}
+                  onEditComment={onEditComment}
+                  onDeleteComment={onDeleteComment}
+                  onVote={onVote}
+                  userVotes={userVotes}
+                />
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -545,5 +1136,5 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
 }
   
   
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<App />);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
