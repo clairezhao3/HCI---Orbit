@@ -1104,7 +1104,7 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
               </button>
             ))}
           </div>
-          <div className="sheet-comments">
+            <div className="sheet-comments">
             <div className="sheet-comments-header">Comment</div>
             <div style={{ position: 'relative', marginBottom: 14 }}>
               <textarea
@@ -1116,22 +1116,36 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
                 onKeyDown={handleKeyPress}
                 onFocus={() => setIsCommentFocused(true)}
                 onBlur={() => setIsCommentFocused(false)}
+                style={{
+                  width: '100%',
+                  borderRadius: 12,
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  background: 'rgba(12,18,25,0.6)',
+                  color: 'var(--accent-light)',
+                  padding: '14px 96px 14px 16px',
+                  fontFamily: 'inherit',
+                  resize: 'none',
+                  fontSize: 15,
+                  boxSizing: 'border-box',
+                }}
               />
               <button
                 onClick={handleSubmitComment}
                 disabled={!commentText.trim()}
                 style={{
                   position: 'absolute',
-                  right: 10,
-                  bottom: 10,
-                  background: commentText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                  top: '50%',
+                  right: 14,
+                  transform: 'translateY(-50%)',
+                  background: commentText.trim() ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.25)',
                   color: '#182F45',
                   border: 0,
-                  borderRadius: 8,
-                  padding: '8px 16px',
+                  borderRadius: 999,
+                  padding: '8px 18px',
                   fontWeight: 600,
-                  fontSize: 14,
+                  fontSize: 13,
                   cursor: commentText.trim() ? 'pointer' : 'not-allowed',
+                  transition: 'background 0.2s ease',
                 }}
               >
                 Post
