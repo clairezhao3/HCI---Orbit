@@ -30,7 +30,7 @@ function NavBar({ value, onChange }) {
     const items = [
         { key: "map",    icon: "language",        label: "Map" },
         { key: "places", icon: "person",          label: "My Places" },
-        { key: "nearby", icon: "radar",           label: "Nearby" },   // nice match for “activity/nearby”
+        { key: "nearby", icon: "radar",           label: "Nearby" },
         { key: "alerts", icon: "notifications",   label: "Alerts" },
     ];
 
@@ -74,21 +74,18 @@ function App() {
 
 // ---------- Utilities ----------
 function bubbleSize(count, {min=26, max=56} = {}) {
-    // sqrt scaling: grows sublinearly so big counts don't dominate
     const s = Math.sqrt(count);
-    // normalize assuming "typical" max ~ 2000 comments; can change
     const norm = Math.min(s / Math.sqrt(2000), 1);
     return Math.round(min + (max - min) * norm);
   }
 
 function pinColor(count) {
   const intensity = Math.min(Math.sqrt(count) / Math.sqrt(2000), 1);
-  const lightness = 70 - intensity * 35; // darker for higher counts
+  const lightness = 70 - intensity * 35;
   return `hsl(28, 95%, ${lightness}%)`;
 }
   
-  // Example hardcoded data: positions in % relative to the image
-const VENUES = [
+const INITIAL_VENUES = [
     {
       id: "cbp",
       name: "Citizens Bank Park",
@@ -285,6 +282,7 @@ function SearchOverlay() {
 }
 
 function MapExperience() {
+  const [venues, setVenues] = React.useState(INITIAL_VENUES);
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
 
@@ -298,27 +296,66 @@ function MapExperience() {
     setTimeout(() => setSelectedVenue(null), 280);
   };
 
+  const handleAddComment = (venueId, commentText) => {
+    setVenues(prevVenues => 
+      prevVenues.map(v => {
+        if (v.id === venueId) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+          }).toLowerCase();
+          
+          const newComment = {
+            id: `c${Date.now()}`,
+            author: "You",
+            text: commentText,
+            upvotes: 0,
+            downvotes: 0,
+            time: timeStr,
+          };
+          
+          const updatedVenue = {
+            ...v,
+            comments: [newComment, ...v.comments],
+            count: v.count + 1,
+          };
+          
+          // Update selected venue if it's the current one
+          if (selectedVenue?.id === venueId) {
+            setSelectedVenue(updatedVenue);
+          }
+          
+          return updatedVenue;
+        }
+        return v;
+      })
+    );
+  };
+
   return (
     <div className="map-layout">
       <SearchOverlay />
       <div className="map-viewport">
-        <MapStatic onSelectVenue={handleVenueSelect} />
+        <MapStatic venues={venues} onSelectVenue={handleVenueSelect} />
         <BottomSheet
           venue={selectedVenue}
           state={sheetState}
           onStateChange={setSheetState}
           onClose={handleClose}
+          onAddComment={handleAddComment}
         />
       </div>
     </div>
   );
 }
 
-function MapStatic({ onSelectVenue }) {
+function MapStatic({ venues, onSelectVenue }) {
   return (
     <div className="map-wrap">
       <div className="map-static" />
-      {VENUES.map((v) => (
+      {venues.map((v) => (
         <Pin
           key={v.id}
           xPct={v.xPct}
@@ -332,8 +369,9 @@ function MapStatic({ onSelectVenue }) {
   );
 }
 
-function BottomSheet({ venue, state, onStateChange, onClose }) {
+function BottomSheet({ venue, state, onStateChange, onClose, onAddComment }) {
   const dragRef = React.useRef({ startY: 0, state: "closed" });
+  const [commentText, setCommentText] = React.useState("");
 
   if (!venue && state === "closed") {
     return null;
@@ -355,7 +393,6 @@ function BottomSheet({ venue, state, onStateChange, onClose }) {
         onClose();
       }
     } else {
-      // Treat a tap as a toggle between peek/full
       if (dragRef.current.state === "peek") {
         onStateChange("full");
       } else if (dragRef.current.state === "full") {
@@ -363,6 +400,19 @@ function BottomSheet({ venue, state, onStateChange, onClose }) {
       }
     }
     e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const handleSubmitComment = () => {
+    if (commentText.trim() && venue) {
+      onAddComment(venue.id, commentText.trim());
+      setCommentText("");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      handleSubmitComment();
+    }
   };
 
   const sheetClass = [
@@ -438,11 +488,35 @@ function BottomSheet({ venue, state, onStateChange, onClose }) {
         </div>
         <div className="sheet-comments">
           <div className="sheet-comments-header">Comment</div>
-          <textarea
-            placeholder="Share an update..."
-            rows="3"
-            aria-label="Add a comment"
-          />
+          <div style={{ position: 'relative', marginBottom: 14 }}>
+            <textarea
+              placeholder="Share an update..."
+              rows="3"
+              aria-label="Add a comment"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={handleKeyPress}
+            />
+            <button
+              onClick={handleSubmitComment}
+              disabled={!commentText.trim()}
+              style={{
+                position: 'absolute',
+                right: 10,
+                bottom: 10,
+                background: commentText.trim() ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                color: '#182F45',
+                border: 0,
+                borderRadius: 8,
+                padding: '8px 16px',
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: commentText.trim() ? 'pointer' : 'not-allowed',
+              }}
+            >
+              Post
+            </button>
+          </div>
           <ul className="comment-list">
             {comments.map((c) => (
               <li key={c.id}>
@@ -473,4 +547,3 @@ function BottomSheet({ venue, state, onStateChange, onClose }) {
   
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(<App />);
-  
