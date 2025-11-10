@@ -54,6 +54,11 @@
     }
 
     /* ---- NAVBAR STYLES ---- */
+    .tabbar-wrapper {
+      height: 78px;
+      overflow: hidden;
+    }
+
     .tabbar {
       height: 78px;
       background: var(--accent-dark);
@@ -61,6 +66,14 @@
       grid-template-columns: repeat(4, 1fr);
       align-items: center;
       border-top: 1px solid rgba(255,255,255,0.06);
+      transform: translateY(0);
+      transition: transform 0.3s ease, opacity 0.2s ease;
+    }
+
+    .tabbar-wrapper.collapsed .tabbar {
+      transform: translateY(100%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     .tab {

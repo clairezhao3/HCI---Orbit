@@ -1,4 +1,4 @@
-function Screen({ tab }) {
+function Screen({ tab, renderMap }) {
   const labels = {
     map: "Map",
     places: "My Places",
@@ -9,7 +9,7 @@ function Screen({ tab }) {
   if (tab === "map") {
     return (
       <div className="screen screen-map" aria-label="Map view">
-        <MapExperience />
+        {renderMap ? renderMap() : null}
       </div>
     );
   }
@@ -65,18 +65,27 @@ function App() {
     const [tab, setTab] = React.useState("map");
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
+    const [sheetOpen, setSheetOpen] = React.useState(false);
 
     return (
         <>
-        <Screen tab={tab} />
-        <NavBar value={tab} onChange={setTab} />
+        <KeyboardContext.Provider value={{ setKeyboardVisible, keyboardHeight }}>
+          <Screen
+            tab={tab}
+            renderMap={() =>
+              tab === "map" ? (
+                <MapExperience onSheetVisibilityChange={setSheetOpen} />
+              ) : null
+            }
+          />
+        </KeyboardContext.Provider>
+        <div className={`tabbar-wrapper ${sheetOpen ? "collapsed" : ""}`}>
+          <NavBar value={tab} onChange={setTab} />
+        </div>
         <Keyboard 
           visible={keyboardVisible} 
           onHeightChange={setKeyboardHeight}
         />
-        <KeyboardContext.Provider value={{ setKeyboardVisible, keyboardHeight }}>
-          {tab === "map" && <MapExperience />}
-        </KeyboardContext.Provider>
         </>
     );
 }
@@ -388,11 +397,25 @@ function SearchOverlay() {
   );
 }
 
-function MapExperience() {
+function MapExperience({ onSheetVisibilityChange }) {
   const [venues, setVenues] = React.useState(INITIAL_VENUES);
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
+
+  React.useEffect(() => {
+    if (onSheetVisibilityChange) {
+      onSheetVisibilityChange(sheetState !== "closed");
+    }
+  }, [sheetState, onSheetVisibilityChange]);
+
+  React.useEffect(() => {
+    return () => {
+      if (onSheetVisibilityChange) {
+        onSheetVisibilityChange(false);
+      }
+    };
+  }, [onSheetVisibilityChange]);
 
   const handleVenueSelect = (venue) => {
     setSelectedVenue(venue);
