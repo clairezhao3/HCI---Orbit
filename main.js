@@ -28,7 +28,10 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
 
   if (tab === "nearby") {
     return (
-      <div className="screen screen-places" aria-label="Nearby">
+      <div
+        className="screen screen-places nearby-screen-container"
+        aria-label="Nearby"
+      >
         <NearbyScreen onShowVenue={onShowVenue} />
       </div>
     );
@@ -534,14 +537,142 @@ const RAW_VENUES = [
       { id: "c19", author: "Andrea", text: "Great photo ops in the modern wing tonight.", upvotes: 44, downvotes: 0, time: "7:40pm", replies: [] },
     ],
   },
+  {
+    id: "stateside",
+    name: "Stateside Live",
+    icon: "sports_bar",
+    xPct: 61,
+    yPct: 24,
+    initialCount: 18,
+    details: {
+      event: "Game Day Watch Party",
+      date: "09/19/2025",
+      time: "8:00PM EST",
+      address: "900 Packer Ave, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "stateside-c1", author: "Jordan", text: "House band just kicked off a Springsteen cover.", upvotes: 14, downvotes: 0, time: "8:12pm", replies: [] },
+      { id: "stateside-c2", author: "Marta", text: "Two-for-one drafts until 9pm.", upvotes: 11, downvotes: 0, time: "8:05pm", replies: [] },
+      { id: "stateside-c3", author: "Evan", text: "Patio heaters are on and super cozy.", upvotes: 9, downvotes: 0, time: "7:55pm", replies: [] },
+    ],
+  },
+  {
+    id: "liveCasino",
+    name: "Live! Casino",
+    icon: "casino",
+    xPct: 72,
+    yPct: 28,
+    initialCount: 17,
+    details: {
+      event: "High Roller Roulette",
+      date: "09/19/2025",
+      time: "10:00PM EST",
+      address: "900 Packer Ave, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "livecasino-c1", author: "Ash", text: "Roulette tables are three deep right now.", upvotes: 18, downvotes: 1, time: "9:48pm", replies: [] },
+      { id: "livecasino-c2", author: "Rina", text: "Live band in the lounge is covering 80s hits.", upvotes: 12, downvotes: 0, time: "9:40pm", replies: [] },
+    ],
+  },
+  {
+    id: "turfClub",
+    name: "The Turf Club",
+    icon: "local_bar",
+    xPct: 54,
+    yPct: 32,
+    initialCount: 15,
+    details: {
+      event: "Post-Game Cocktails",
+      date: "09/19/2025",
+      time: "9:30PM EST",
+      address: "1 Citizens Bank Way, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "turfclub-c1", author: "Milo", text: "Bartender is doing made-to-order old fashioneds.", upvotes: 16, downvotes: 0, time: "9:15pm", replies: [] },
+      { id: "turfclub-c2", author: "Gianna", text: "Great view of the field from the mezzanine.", upvotes: 10, downvotes: 0, time: "9:05pm", replies: [] },
+    ],
+  },
+  {
+    id: "sportsComplex",
+    name: "The Philadelphia Sports Complex",
+    icon: "directions_run",
+    xPct: 50,
+    yPct: 44,
+    initialCount: 12,
+    details: {
+      event: "Fan Fest",
+      date: "09/19/2025",
+      time: "5:00PM EST",
+      address: "3601 S Broad St, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "sportscomplex-c1", author: "Leo", text: "Obstacle course is open to all ages now.", upvotes: 8, downvotes: 0, time: "5:40pm", replies: [] },
+      { id: "sportscomplex-c2", author: "Anya", text: "Merch trucks lined up along Pattison Ave.", upvotes: 6, downvotes: 0, time: "5:32pm", replies: [] },
+    ],
+  },
+  {
+    id: "passAndStow",
+    name: "Pass and Stow",
+    icon: "local_pizza",
+    xPct: 58,
+    yPct: 38,
+    initialCount: 9,
+    details: {
+      event: "Wood-Fired Slice Showcase",
+      date: "09/19/2025",
+      time: "7:00PM EST",
+      address: "1 Citizens Bank Way, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "passandstow-c1", author: "Drew", text: "Pepperoni special is selling out quick.", upvotes: 9, downvotes: 0, time: "7:20pm", replies: [] },
+      { id: "passandstow-c2", author: "Ivy", text: "Plenty of heat lamps on the patio.", upvotes: 5, downvotes: 0, time: "7:14pm", replies: [] },
+    ],
+  },
+  {
+    id: "bullsBbq",
+    name: "Bull's BBQ",
+    icon: "restaurant",
+    xPct: 56,
+    yPct: 41,
+    initialCount: 5,
+    details: {
+      event: "Smoker Showcase",
+      date: "09/19/2025",
+      time: "6:30PM EST",
+      address: "1 Citizens Bank Way, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "bullsbbq-c1", author: "Kurt", text: "Brisket platter comes with extra pickles tonight.", upvotes: 7, downvotes: 0, time: "6:45pm", replies: [] },
+      { id: "bullsbbq-c2", author: "Neha", text: "Line is short if you enter from the third-base side.", upvotes: 4, downvotes: 0, time: "6:38pm", replies: [] },
+    ],
+  },
+  {
+    id: "shakeShack",
+    name: "Shake Shack",
+    icon: "lunch_dining",
+    xPct: 52,
+    yPct: 48,
+    initialCount: 2,
+    details: {
+      event: "Game Night Custard Drop",
+      date: "09/19/2025",
+      time: "8:30PM EST",
+      address: "3500 S Broad St, Philadelphia, PA 19148",
+    },
+    comments: [
+      { id: "shakeshack-c1", author: "Olive", text: "Choco-peanut custard just hit the machines.", upvotes: 5, downvotes: 0, time: "8:36pm", replies: [] },
+    ],
+  },
 ];
 
 const INITIAL_VENUES = RAW_VENUES.map((venue) => {
   const comments = (venue.comments || []).slice(0, MAX_INITIAL_COMMENTS);
+  const computedCount =
+    typeof venue.initialCount === "number" ? venue.initialCount : comments.length;
   return {
     ...venue,
     comments,
-    count: comments.length,
+    count: computedCount,
   };
 });
 
@@ -591,6 +722,30 @@ const NEARBY_CATEGORIES = [
   { id: 3, icon: "fastfood", label: "Fast Food" },
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
+
+const NEARBY_DESTINATION_CONFIG = [
+  { venueId: "stateside", minutes: 2 },
+  { venueId: "liveCasino", minutes: 6 },
+  { venueId: "turfClub", minutes: 3 },
+  { venueId: "sportsComplex", minutes: 11 },
+  { venueId: "passAndStow", minutes: 5 },
+  { venueId: "bullsBbq", minutes: 6 },
+  { venueId: "shakeShack", minutes: 7 },
+];
+
+const NEARBY_DESTINATIONS = NEARBY_DESTINATION_CONFIG.map(({ venueId, minutes }) => {
+  const venue = INITIAL_VENUES.find((v) => v.id === venueId);
+  if (!venue) return null;
+  const topCommentCount = venue.comments?.length ?? 0;
+  return {
+    id: venueId,
+    venueId,
+    name: venue.name,
+    icon: venue.icon,
+    count: topCommentCount,
+    minutes,
+  };
+}).filter(Boolean);
 
 const POPULAR_NOW = ["lincoln", "mcgillins", "franklinHall", "artmuseum"]
   .map((venueId) => {
@@ -758,17 +913,22 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
 
 function NearbyScreen({ onShowVenue }) {
   return (
-    <div className="places-page">
+    <div className="places-page nearby-page" aria-label="Nearby destinations">
       <section className="places-section">
         <div className="places-heading">Nearby</div>
-        <div className="places-panel">
-          <ul className="places-list">
-            {POPULAR_NOW.map((place) => (
+        <div className="places-panel nearby-panel">
+          <ul className="places-list nearby-list">
+            {NEARBY_DESTINATIONS.map((spot) => (
               <PlaceRow
-                key={`nearby-${place.id}`}
-                place={place}
+                key={spot.id}
+                place={{
+                  ...spot,
+                  address: `${spot.minutes} min`,
+                }}
                 onActivate={
-                  onShowVenue ? () => onShowVenue(place.venueId) : undefined
+                  spot.venueId && onShowVenue
+                    ? () => onShowVenue(spot.venueId)
+                    : undefined
                 }
               />
             ))}
