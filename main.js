@@ -635,8 +635,8 @@ const ALERTS = [
 ];
 
 const USER_LOCATION = {
-  xPct: 50,
-  yPct: 55,
+  xPct: 45,
+  yPct: 72,
 };
 
 function PlaceRow({ place, onActivate, removable = false, onRemove }) {
@@ -943,6 +943,7 @@ function MapExperience({
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
+  const [alertedVenues, setAlertedVenues] = React.useState([]);
 
   React.useEffect(() => {
     if (onSheetVisibilityChange) {
@@ -967,6 +968,16 @@ function MapExperience({
     setSheetState("closed");
     setTimeout(() => setSelectedVenue(null), 280);
   };
+
+  const handleToggleAlerts = React.useCallback((venue) => {
+    if (!venue?.id) return;
+    setAlertedVenues((prev) => {
+      if (prev.includes(venue.id)) {
+        return prev.filter((id) => id !== venue.id);
+      }
+      return [...prev, venue.id];
+    });
+  }, []);
 
   const handleAddComment = (venueId, commentText) => {
     setVenues(prevVenues => 
@@ -1219,6 +1230,9 @@ function MapExperience({
   const isSelectedSaved = selectedVenue
     ? savedPlaces.some((p) => p.id === selectedVenue.id)
     : false;
+  const isSelectedAlerted = selectedVenue
+    ? alertedVenues.includes(selectedVenue.id)
+    : false;
 
   return (
     <div className="map-layout">
@@ -1238,6 +1252,8 @@ function MapExperience({
           userVotes={userVotes}
           onToggleSave={onToggleSavePlace}
           isSaved={isSelectedSaved}
+          onToggleAlerts={handleToggleAlerts}
+          isAlertsEnabled={isSelectedAlerted}
         />
       </div>
     </div>
@@ -1547,7 +1563,7 @@ function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment,
   );
 }
 
-function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes, onToggleSave, isSaved }) {
+function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes, onToggleSave, isSaved, onToggleAlerts, isAlertsEnabled }) {
   const dragRef = React.useRef({ startY: 0, state: "closed" });
   const [commentText, setCommentText] = React.useState("");
   const [isCommentFocused, setIsCommentFocused] = React.useState(false);
@@ -1652,9 +1668,16 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
                 </span>
                 <span>{isSaved ? "Saved" : "Save"}</span>
               </button>
-              <button className="icon-btn" aria-label="Alert">
-                <span className="material-symbols-outlined">notifications</span>
-                <span>Alert</span>
+              <button
+                className={`icon-btn ${isAlertsEnabled ? "icon-btn-alert-active" : ""}`}
+                aria-label="Alert"
+                aria-pressed={isAlertsEnabled}
+                onClick={() => onToggleAlerts?.(venue)}
+              >
+                <span className="material-symbols-outlined">
+                  {isAlertsEnabled ? "notifications_active" : "notifications"}
+                </span>
+                <span>{isAlertsEnabled ? "Alerted" : "Alert"}</span>
               </button>
               <button className="icon-btn" aria-label="Close" onClick={onClose}>
                 <span className="material-symbols-outlined">close</span>
