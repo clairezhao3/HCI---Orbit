@@ -595,6 +595,15 @@
       align-items: flex-start;
     }
 
+    .saved-card-clickable {
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .saved-card-clickable:active {
+      transform: translateY(1px);
+    }
+
     .saved-card-name {
       font-size: 18px;
       font-weight: 700;
@@ -639,6 +648,12 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .alert-card:active {
+      transform: translateY(1px);
     }
 
     .alert-info {
@@ -679,6 +694,12 @@
     .alert-arrow {
       font-size: 32px;
       opacity: 0.8;
+    }
+
+    .saved-card-clickable:focus-visible,
+    .alert-card:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.8);
+      outline-offset: 3px;
     }
 
     /* Comment bubble "pin" */

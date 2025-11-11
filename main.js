@@ -1,4 +1,4 @@
-function Screen({ tab, renderMap, savedPlaces, onRemoveSaved }) {
+function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
   const labels = {
     map: "Map",
     places: "My Places",
@@ -17,7 +17,11 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved }) {
   if (tab === "places") {
     return (
       <div className="screen screen-places" aria-label="Saved places">
-        <MyPlacesScreen savedPlaces={savedPlaces} onRemoveSaved={onRemoveSaved} />
+        <MyPlacesScreen
+          savedPlaces={savedPlaces}
+          onRemoveSaved={onRemoveSaved}
+          onShowVenue={onShowVenue}
+        />
       </div>
     );
   }
@@ -25,7 +29,7 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved }) {
   if (tab === "alerts") {
     return (
       <div className="screen screen-places" aria-label="Alerts">
-        <AlertsScreen />
+        <AlertsScreen onShowVenue={onShowVenue} />
       </div>
     );
   }
@@ -82,7 +86,18 @@ function App() {
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [sheetOpen, setSheetOpen] = React.useState(false);
-  const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
+    const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
+    const [pendingVenueId, setPendingVenueId] = React.useState(null);
+    const handleExternalVenueHandled = React.useCallback(
+      () => setPendingVenueId(null),
+      []
+    );
+
+    const handleShowVenue = React.useCallback((venueId) => {
+      if (!venueId) return;
+      setPendingVenueId(venueId);
+      setTab("map");
+    }, []);
 
     const handleToggleSavePlace = React.useCallback((venue) => {
       setSavedPlaces((prev) => {
@@ -112,12 +127,15 @@ function App() {
             tab={tab}
             savedPlaces={savedPlaces}
             onRemoveSaved={handleRemoveSaved}
+            onShowVenue={handleShowVenue}
             renderMap={() =>
               tab === "map" ? (
                 <MapExperience
                   onSheetVisibilityChange={setSheetOpen}
                   savedPlaces={savedPlaces}
                   onToggleSavePlace={handleToggleSavePlace}
+                  openVenueId={pendingVenueId}
+                  onExternalVenueHandled={handleExternalVenueHandled}
                 />
               ) : null
             }
@@ -374,6 +392,23 @@ const INITIAL_VENUES = [
         { id: "c5", author: "Sam", text: "Crew is still setting up the track.", upvotes: 3, downvotes: 0, time: "3:10pm", replies: [] },
       ],
     },
+    {
+      id: "smokey",
+      name: "Smokey Joe's",
+      xPct: 18,
+      yPct: 62,
+      count: 24,
+      details: {
+        event: "Student Night",
+        date: "09/18/2025",
+        time: "11:30PM EST",
+        address: "40th & Walnut St, Philadelphia, PA 19104",
+      },
+      comments: [
+        { id: "c6", author: "Jess", text: "Line wraps around the corner right now.", upvotes: 22, downvotes: 1, time: "11:35pm", replies: [] },
+        { id: "c7", author: "Leo", text: "DJ just switched to throwbacks.", upvotes: 15, downvotes: 0, time: "11:38pm", replies: [] },
+      ],
+    },
 ];
 
 const QUICK_ACTIONS = [
@@ -427,6 +462,7 @@ const ALERTS = [
   {
     id: 1,
     location: "Citizens Bank Park",
+    venueId: "cbp",
     date: "9/19",
     time: "9:41pm",
     lines: ["Laura replied to you:", "Yes! Everyone is dancing."],
@@ -434,6 +470,7 @@ const ALERTS = [
   {
     id: 2,
     location: "Citizens Bank Park",
+    venueId: "cbp",
     date: "9/19",
     time: "9:00pm",
     lines: ["Active Event starting now!", "Concert with The Lumineers"],
@@ -441,6 +478,7 @@ const ALERTS = [
   {
     id: 3,
     location: "Smokey Joe's",
+    venueId: "smokey",
     date: "9/18",
     time: "11:42pm",
     lines: ["Recent spike in activity:", "See what others are saying!"],
@@ -460,7 +498,14 @@ const DEFAULT_SAVED_PLACES = [
   },
 ];
 
-function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
+function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
+  const handleKeyPress = (event, id) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onShowVenue?.(id);
+    }
+  };
+
   if (!savedPlaces || savedPlaces.length === 0) {
     return (
       <div>
@@ -477,7 +522,14 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
       <div className="title" style={{ marginBottom: 16 }}>My Places</div>
       <ul className="my-places-list">
         {savedPlaces.map((place) => (
-          <li key={place.id} className="saved-card">
+          <li
+            key={place.id}
+            className="saved-card saved-card-clickable"
+            role="button"
+            tabIndex={0}
+            onClick={() => onShowVenue?.(place.id)}
+            onKeyDown={(event) => handleKeyPress(event, place.id)}
+          >
             <div>
               <div className="saved-card-name">{place.name}</div>
               <div className="saved-card-meta">
@@ -490,7 +542,10 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
             </div>
             <button
               className="outline-btn small"
-              onClick={() => onRemoveSaved(place.id)}
+              onClick={(event) => {
+                event.stopPropagation();
+                onRemoveSaved(place.id);
+              }}
             >
               Remove
             </button>
@@ -502,13 +557,27 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
 }
 
 
-function AlertsScreen() {
+function AlertsScreen({ onShowVenue }) {
+  const handleKeyPress = (event, id) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onShowVenue?.(id);
+    }
+  };
+
   return (
     <div style={{ width: "100%" }} className="alerts-screen">
       <div className="title" style={{ marginBottom: 16 }}>Alerts</div>
       <ul className="my-places-list alerts-list">
         {ALERTS.map((alert) => (
-          <li key={alert.id} className="alert-card">
+          <li
+            key={alert.id}
+            className="alert-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => onShowVenue?.(alert.venueId)}
+            onKeyDown={(event) => handleKeyPress(event, alert.venueId)}
+          >
             <div className="alert-info">
               <div className="alert-header">
                 <div className="alert-location">{alert.location}</div>
@@ -640,7 +709,13 @@ function SearchOverlay() {
   );
 }
 
-function MapExperience({ onSheetVisibilityChange, savedPlaces = [], onToggleSavePlace }) {
+function MapExperience({
+  onSheetVisibilityChange,
+  savedPlaces = [],
+  onToggleSavePlace,
+  openVenueId,
+  onExternalVenueHandled,
+}) {
   const [venues, setVenues] = React.useState(INITIAL_VENUES);
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
@@ -707,6 +782,16 @@ function MapExperience({ onSheetVisibilityChange, savedPlaces = [], onToggleSave
       })
     );
   };
+
+  React.useEffect(() => {
+    if (!openVenueId) return;
+    const targetVenue = venues.find((v) => v.id === openVenueId);
+    if (targetVenue) {
+      setSelectedVenue(targetVenue);
+      setSheetState("full");
+    }
+    onExternalVenueHandled?.();
+  }, [openVenueId, venues, onExternalVenueHandled]);
 
   const handleEditComment = (venueId, commentId, newText, isReply = false, parentCommentId = null) => {
     setVenues(prevVenues => 
