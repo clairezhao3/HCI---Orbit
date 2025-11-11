@@ -316,11 +316,27 @@
     }
 
     .recents-list li {
+      padding: 0;
+      font-weight: 500;
+    }
+
+    .recent-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 0;
-      font-weight: 500;
+      width: 100%;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      padding: 8px 0;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .recent-item:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.8);
+      outline-offset: 2px;
     }
 
     .recent-text {
