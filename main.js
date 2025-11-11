@@ -321,7 +321,7 @@ function Keyboard({ visible, onHeightChange, onRequestClose }) {
 }
 
 // ---------- Utilities ----------
-function bubbleSize(count, {min=26, max=56} = {}) {
+function bubbleSize(count, {min=25, max=80} = {}) {
     const s = Math.sqrt(count);
     const norm = Math.min(s / Math.sqrt(2000), 1);
     return Math.round(min + (max - min) * norm);
