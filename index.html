@@ -826,6 +826,27 @@
       height: 100%;
     }
 
+    .user-location-dot {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4da3ff;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 10px rgba(77,163,255,0.65);
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .user-location-dot::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid rgba(77,163,255,0.5);
+    }
+
 
 
 </style>

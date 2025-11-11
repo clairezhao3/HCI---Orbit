@@ -626,6 +626,11 @@ const ALERTS = [
   },
 ];
 
+const USER_LOCATION = {
+  xPct: 50,
+  yPct: 55,
+};
+
 const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
   .map((venueId) => {
     const venue = INITIAL_VENUES.find((v) => v.id === venueId);
@@ -1206,6 +1211,15 @@ function MapStatic({ venues, onSelectVenue }) {
   return (
     <div className="map-wrap">
       <div className="map-static" />
+      <div
+        className="user-location-dot"
+        style={{
+          left: `${USER_LOCATION.xPct}%`,
+          top: `${USER_LOCATION.yPct}%`,
+        }}
+        role="img"
+        aria-label="Your location"
+      />
       {venues.map((v) => (
         <Pin
           key={v.id}
