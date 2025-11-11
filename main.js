@@ -345,8 +345,8 @@ const RAW_VENUES = [
     id: "cbp",
     name: "Citizens Bank Park",
     icon: "stadium",
-    xPct: 52,
-    yPct: 36,
+    xPct: 50,
+    yPct: 40,
     details: {
       event: "Concert with The Lumineers",
       date: "09/19/2025",
@@ -393,6 +393,7 @@ const RAW_VENUES = [
     icon: "stadium",
     xPct: 50,
     yPct: 95,
+    initialCount: 36,
     details: {
       event: "Eagles Open Practice",
       date: "09/20/2025",
@@ -478,7 +479,7 @@ const RAW_VENUES = [
       event: "Student Night",
       date: "09/18/2025",
       time: "11:30PM EST",
-      address: "40th & Walnut St, Philadelphia, PA 19104",
+      address: "210 S 40th St, Philadelphia, PA 19104",
     },
     comments: [
       { id: "c14", author: "Jess", text: "Line wraps around the corner right now.", upvotes: 22, downvotes: 1, time: "11:35pm", replies: [] },
@@ -507,12 +508,12 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: -40,
     yPct: -40,
-    initialCount: 18,
+    initialCount: 31,
     details: {
       event: "Trivia Night Finals",
       date: "09/19/2025",
       time: "9:00PM EST",
-      address: "1310 Drury St, Philadelphia, PA 19107",
+      address: "1510 Drury St, Philadelphia, PA 19107",
     },
     comments: [
       { id: "mcgillins-c1", author: "Kelly", text: "Second round questions are tough!", upvotes: 31, downvotes: 0, time: "9:25pm", replies: [] },
@@ -541,6 +542,7 @@ const RAW_VENUES = [
     icon: "music_note",
     xPct: -40,
     yPct: -40,
+    initialCount: 28,
     initialCount: 17,
     details: {
       event: "Electronic Showcase",
@@ -574,7 +576,7 @@ const RAW_VENUES = [
     icon: "museum",
     xPct: -40,
     yPct: -40,
-    initialCount: 12,
+    initialCount: 27,
     details: {
       event: "Late Night Exhibit Tour",
       date: "09/21/2025",
@@ -634,8 +636,8 @@ const RAW_VENUES = [
     id: "liveCasino",
     name: "Live! Casino",
     icon: "casino",
-    xPct: 70,
-    yPct: 5,
+    xPct: 72,
+    yPct: 7,
     initialCount: 17,
     details: {
       event: "High Roller Roulette",
@@ -667,7 +669,7 @@ const RAW_VENUES = [
     id: "turfClub",
     name: "Third Base Gate",
     icon: "local_bar",
-    xPct: 78,
+    xPct: 76,
     yPct: 52,
     initialCount: 15,
     details: {
@@ -698,8 +700,8 @@ const RAW_VENUES = [
     id: "sportsComplex",
     name: "The Philadelphia Sports Complex",
     icon: "directions_run",
-    xPct: 80,
-    yPct: 30,
+    xPct: 83,
+    yPct: 32,
     initialCount: 12,
     details: {
       event: "Fan Fest",
@@ -751,8 +753,8 @@ const RAW_VENUES = [
     id: "bullsBbq",
     name: "Bull's BBQ",
     icon: "restaurant",
-    xPct: 35,
-    yPct: 35,
+    xPct: 30,
+    yPct: 32,
     initialCount: 5,
     details: {
       event: "Smoker Showcase",
@@ -773,7 +775,7 @@ const RAW_VENUES = [
     name: "Shake Shack",
     icon: "lunch_dining",
     xPct: 52,
-    yPct: 55,
+    yPct: 58,
     initialCount: 2,
     details: {
       event: "Game Night Custard Drop",
@@ -804,7 +806,6 @@ const QUICK_ACTIONS = [
   { id: "call", icon: "call", label: "Call" },
   { id: "website", icon: "language", label: "Website" },
   { id: "tickets", icon: "confirmation_number", label: "Tickets" },
-  { id: "more", icon: "more_horiz", label: "More" },
 ];
   
 function Pin({ xPct, yPct, count, label, onClick }) {
@@ -847,12 +848,12 @@ const NEARBY_CATEGORIES = [
 
 const NEARBY_DESTINATION_CONFIG = [
   { venueId: "stateside", minutes: 2 },
-  { venueId: "liveCasino", minutes: 6 },
-  { venueId: "turfClub", minutes: 3 },
-  { venueId: "sportsComplex", minutes: 11 },
   { venueId: "passAndStow", minutes: 5 },
   { venueId: "bullsBbq", minutes: 6 },
   { venueId: "shakeShack", minutes: 7 },
+  { venueId: "turfClub", minutes: 8 },
+  { venueId: "sportsComplex", minutes: 11 },
+  { venueId: "liveCasino", minutes: 14 },
 ];
 
 const NEARBY_DESTINATIONS = NEARBY_DESTINATION_CONFIG.map(({ venueId, minutes }) => {
@@ -912,7 +913,7 @@ const ALERTS = [
 ];
 
 const USER_LOCATION = {
-  xPct: 45,
+  xPct: 38,
   yPct: 72,
 };
 
@@ -922,6 +923,11 @@ function PlaceRow({ place, onActivate, removable = false, onRemove }) {
   const primaryAddress =
     place.address ||
     (place.details?.address ? place.details.address.split(",")[0] : "");
+  const isNearbyEntry = Boolean(place.isNearby);
+  const nearbyMinutes =
+    typeof place.minutes === "number" && !Number.isNaN(place.minutes)
+      ? place.minutes
+      : null;
 
   const handleKeyPress = (event) => {
     if (!clickable) return;
@@ -949,7 +955,18 @@ function PlaceRow({ place, onActivate, removable = false, onRemove }) {
       </div>
       <div className="place-row-details">
         <div className="place-row-name">{place.name}</div>
-        <div className="place-row-address">{primaryAddress}</div>
+        <div className="place-row-address">
+          {isNearbyEntry && nearbyMinutes !== null ? (
+            <span className="nearby-minute-label">
+              <span className="material-symbols-outlined nearby-minute-icon">
+                directions_walk
+              </span>
+              <span>{nearbyMinutes} min</span>
+            </span>
+          ) : (
+            primaryAddress
+          )}
+        </div>
       </div>
       {removable && (
         <button
@@ -1046,6 +1063,7 @@ function NearbyScreen({ onShowVenue }) {
                 place={{
                   ...spot,
                   address: `${spot.minutes} min`,
+                  isNearby: true,
                 }}
                 onActivate={
                   spot.venueId && onShowVenue
@@ -1071,42 +1089,46 @@ function AlertsScreen({ onShowVenue }) {
   };
 
   return (
-    <div style={{ width: "100%" }} className="alerts-screen">
-      <div className="title" style={{ marginBottom: 16 }}>Alerts</div>
-      <ul className="my-places-list alerts-list">
-        {ALERTS.map((alert) => (
-          <li
-            key={alert.id}
-            className="alert-card"
-            role="button"
-            tabIndex={0}
-            onClick={() => onShowVenue?.(alert.venueId)}
-            onKeyDown={(event) => handleKeyPress(event, alert.venueId)}
-          >
-            <div className="alert-info">
-              <div className="alert-header">
-                <div className="alert-location">{alert.location}</div>
-                <div className="alert-timestamp">
-                  <span>{alert.date}</span>
-                  <span>{alert.time}</span>
+    <div className="places-page alerts-page">
+      <section className="places-section">
+        <div className="places-heading">Alerts</div>
+        <div className="places-panel alerts-panel">
+          <ul className="my-places-list alerts-list">
+            {ALERTS.map((alert) => (
+              <li
+                key={alert.id}
+                className="alert-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => onShowVenue?.(alert.venueId)}
+                onKeyDown={(event) => handleKeyPress(event, alert.venueId)}
+              >
+                <div className="alert-info">
+                  <div className="alert-header">
+                    <div className="alert-location">{alert.location}</div>
+                    <div className="alert-timestamp">
+                      <span>{alert.date}</span>
+                      <span>{alert.time}</span>
+                    </div>
+                  </div>
+                  <div className="alert-divider" />
+                  <div className="alert-body">
+                    {alert.lines.map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="alert-divider" />
-              <div className="alert-body">
-                {alert.lines.map((line, idx) => (
-                  <div key={idx}>{line}</div>
-                ))}
-              </div>
-            </div>
-            <span
-              className="material-symbols-outlined alert-arrow"
-              aria-hidden="true"
-            >
-              chevron_right
-            </span>
-          </li>
-        ))}
-      </ul>
+                <span
+                  className="material-symbols-outlined alert-arrow"
+                  aria-hidden="true"
+                >
+                  chevron_right
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
     </div>
   );
 }
@@ -1116,6 +1138,20 @@ function SearchOverlay({ onShowVenue }) {
   const [query, setQuery] = React.useState("");
   const inputRef = React.useRef(null);
   const { setKeyboardVisible } = React.useContext(KeyboardContext);
+  const searchableVenues = React.useMemo(
+    () =>
+      INITIAL_VENUES.map((venue) => {
+        const address = venue.details?.address || "Philadelphia";
+        const city = address.split(",").slice(-1)[0]?.trim() || "Philadelphia";
+        return {
+          id: `search-${venue.id}`,
+          title: venue.name,
+          city,
+          venueId: venue.id,
+        };
+      }),
+    []
+  );
 
   React.useEffect(() => {
     if (open && inputRef.current) {
@@ -1130,12 +1166,18 @@ function SearchOverlay({ onShowVenue }) {
     setKeyboardVisible(false);
   };
 
-  const list = (query
-    ? RECENT_PLACES.filter((r) =>
-        `${r.title} ${r.city}`.toLowerCase().includes(query.toLowerCase())
-      )
-    : RECENT_PLACES
-  ).filter((item) => !!item.venueId);
+  const normalizedQuery = query.trim().toLowerCase();
+  const list = React.useMemo(() => {
+    const pool = normalizedQuery ? searchableVenues : RECENT_PLACES;
+    return pool
+      .filter((item) => {
+        if (!normalizedQuery) return true;
+        return `${item.title} ${item.city}`
+          .toLowerCase()
+          .includes(normalizedQuery);
+      })
+      .filter((item) => !!item.venueId);
+  }, [normalizedQuery, searchableVenues]);
 
   const handleRecentSelect = (venueId) => {
     if (!venueId) return;
@@ -1143,6 +1185,13 @@ function SearchOverlay({ onShowVenue }) {
     setOpen(false);
     setQuery("");
     setKeyboardVisible(false);
+  };
+
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Enter" && list[0]?.venueId) {
+      event.preventDefault();
+      handleRecentSelect(list[0].venueId);
+    }
   };
 
   const card = (
@@ -1158,6 +1207,7 @@ function SearchOverlay({ onShowVenue }) {
             aria-label="Search Maps"
             onFocus={() => setKeyboardVisible(true)}
             onBlur={() => setKeyboardVisible(false)}
+            onKeyDown={handleInputKeyDown}
           />
           <button
             type="button"
@@ -1169,7 +1219,7 @@ function SearchOverlay({ onShowVenue }) {
         </div>
       <div className="divider" />
       <div className="recents-header">
-        <span className="title">Recents</span>
+        <span className="title">{normalizedQuery ? "Results" : "Recents"}</span>
       </div>
       <ul className="recents-list">
         {list.map((item) => (
@@ -1210,9 +1260,10 @@ function SearchOverlay({ onShowVenue }) {
           type="button"
           className="search-pill"
           onClick={() => setOpen(true)}
+          aria-label="Open search"
         >
           <span className="material-symbols-outlined">search</span>
-          <span>Search Maps</span>
+          <span className="search-pill-text">Search Maps</span>
         </button>
       </div>
     );
@@ -1960,10 +2011,6 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
               )}
             </div>
             <div className="sheet-icon-stack">
-              <button className="icon-btn" aria-label="Share">
-                <span className="material-symbols-outlined">ios_share</span>
-                <span>Share</span>
-              </button>
               <button
                 className="icon-btn"
                 aria-label="Save place"

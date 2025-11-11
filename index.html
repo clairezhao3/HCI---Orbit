@@ -151,6 +151,7 @@
       height: 100%;
       box-sizing: border-box;
       overflow-y: auto;
+      background: #1f3a55;
     }
 
     .map-layout {
@@ -206,10 +207,6 @@
       min-height: 76px;
     }
 
-    .search-panel .material-symbols-outlined {
-      font-size: 24px;
-    }
-
     .search-pill {
       width: 100%;
       border-radius: 18px;
@@ -219,9 +216,23 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 20px;
+      font-size: 28px;
+      font-family: "Carlito", "Fustat", system-ui, sans-serif;
+      font-weight: 700;
       padding: 16px 18px;
       cursor: pointer;
+    }
+
+    .search-pill .material-symbols-outlined {
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .search-pill-text {
+      font-size: 28px;
+      font-family: "Carlito", "Fustat", system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
     .search-panel-spacer {
@@ -257,7 +268,8 @@
     }
 
     .search-input-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
       gap: 8px;
       padding: 6px 0;
@@ -265,16 +277,28 @@
 
     .search-input-row input {
       flex: 1;
-      font-size: 20px;
-      font-family: inherit;
+      min-width: 0;
+      font-size: 28px;
+      font-family: "Carlito", "Fustat", system-ui, sans-serif;
+      font-weight: 700;
       background: transparent;
       border: 0;
       color: inherit;
       outline: none;
+      letter-spacing: 0.5px;
+    }
+
+    .search-input-row input::placeholder {
+      font-size: 28px;
+      font-family: "Carlito", "Fustat", system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.85);
     }
 
     .search-icon {
-      font-size: 28px;
+      font-size: 30px;
+      font-weight: 700;
     }
 
     .search-cancel {
@@ -282,9 +306,11 @@
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 10px;
       color: var(--accent-light);
-      font-size: 14px;
-      padding: 6px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 16px;
       cursor: pointer;
+      justify-self: end;
     }
 
     .divider {
@@ -752,16 +778,21 @@
 
     .screen-places.nearby-screen-container {
       padding: 24px;
-      background: transparent;
+      background: #1f3a55;
     }
 
     .nearby-page {
       display: flex;
       flex-direction: column;
       gap: 20px;
+      background: transparent;
     }
 
     .nearby-panel {
+      background: rgba(65,90,114,0.92);
+    }
+
+    .alerts-panel {
       background: rgba(65,90,114,0.92);
     }
 
