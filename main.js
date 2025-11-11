@@ -354,6 +354,24 @@ const RAW_VENUES = [
       address: "One Citizens Bank Way, Philadelphia, PA 19148",
     },
     comments: [
+      {
+        id: "cYou1",
+        author: "You",
+        text: "Is it good enough to go right now?",
+        upvotes: 0,
+        downvotes: 0,
+        time: "9:36pm",
+        replies: [
+          {
+            id: "rLaura1",
+            author: "Laura",
+            text: "Yes! Everyone is dancing.",
+            upvotes: 0,
+            downvotes: 0,
+            time: "9:41pm",
+          },
+        ],
+      },
       { id: "c1", author: "David", text: "First opener just started!", upvotes: 271, downvotes: 1, time: "9:12pm", replies: [] },
       { id: "c2", author: "Mary", text: "I'm at 314 if anyone wants to meet up!", upvotes: 202, downvotes: 4, time: "9:33pm", replies: [
         { id: "r1", author: "John", text: "I'm nearby! Section 312", upvotes: 15, downvotes: 0, time: "9:35pm" },
