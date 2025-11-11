@@ -111,6 +111,8 @@ function App() {
             id: venue.id,
             name: venue.name,
             details: venue.details,
+            icon: venue.icon,
+            count: venue.count ?? 0,
           },
         ];
       });
@@ -332,83 +334,156 @@ function pinColor(count) {
 }
   
 const INITIAL_VENUES = [
-    {
-      id: "cbp",
-      name: "Citizens Bank Park",
-      xPct: 57,
-      yPct: 26,
-      count: 10,
-      details: {
-        event: "Concert with The Lumineers",
-        date: "09/19/2025",
-        time: "9:00PM EST",
-        address: "One Citizens Bank Way, Philadelphia, PA 19148",
-      },
-      comments: [
-        { id: "c1", author: "David", text: "First opener just started!", upvotes: 271, downvotes: 1, time: "9:12pm", replies: [] },
-        { id: "c2", author: "Mary", text: "I'm at 314 if anyone wants to meet up!", upvotes: 202, downvotes: 4, time: "9:33pm", replies: [
-          { id: "r1", author: "John", text: "I'm nearby! Section 312", upvotes: 15, downvotes: 0, time: "9:35pm" },
-          { id: "r2", author: "Sarah", text: "Me too! Let's meet at the concession stand", upvotes: 8, downvotes: 0, time: "9:37pm" },
-        ]},
-        { id: "c3", author: "Annie", text: "Any recommendations for parking?", upvotes: 189, downvotes: 0, time: "9:02pm", replies: [] },
-        { id: "c4", author: "Mike", text: "Sound quality is amazing tonight!", upvotes: 156, downvotes: 2, time: "9:15pm", replies: [] },
-        { id: "c5", author: "Lisa", text: "Merch line is crazy long", upvotes: 98, downvotes: 0, time: "8:45pm", replies: [] },
-        { id: "c6", author: "Tom", text: "Best concert I've been to this year", upvotes: 143, downvotes: 1, time: "9:40pm", replies: [] },
-        { id: "c7", author: "Emma", text: "Traffic getting in was brutal", upvotes: 67, downvotes: 3, time: "8:30pm", replies: [] },
-        { id: "c8", author: "Chris", text: "Food prices are insane but the nachos are worth it", upvotes: 89, downvotes: 5, time: "8:55pm", replies: [] },
-        { id: "c9", author: "Rachel", text: "Anyone know what time the show ends?", upvotes: 45, downvotes: 0, time: "9:05pm", replies: [] },
-        { id: "c10", author: "Steve", text: "View from section 420 is perfect!", upvotes: 112, downvotes: 1, time: "9:20pm", replies: [] },
-      ],
+  {
+    id: "cbp",
+    name: "Citizens Bank Park",
+    icon: "stadium",
+    xPct: 57,
+    yPct: 26,
+    count: 547,
+    details: {
+      event: "Concert with The Lumineers",
+      date: "09/19/2025",
+      time: "9:00PM EST",
+      address: "One Citizens Bank Way, Philadelphia, PA 19148",
     },
-    {
-      id: "lincoln",
-      name: "Lincoln Financial Park",
-      xPct: 45,
-      yPct: 80,
-      count: 109,
-      details: {
-        event: "Eagles Open Practice",
-        date: "09/20/2025",
-        time: "10:00AM EST",
-        address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
-      },
-      comments: [
-        { id: "c4", author: "Rob", text: "Security lines are moving fast.", upvotes: 42, downvotes: 0, time: "9:05am", replies: [] },
-      ],
+    comments: [
+      { id: "c1", author: "David", text: "First opener just started!", upvotes: 271, downvotes: 1, time: "9:12pm", replies: [] },
+      { id: "c2", author: "Mary", text: "I'm at 314 if anyone wants to meet up!", upvotes: 202, downvotes: 4, time: "9:33pm", replies: [
+        { id: "r1", author: "John", text: "I'm nearby! Section 312", upvotes: 15, downvotes: 0, time: "9:35pm" },
+        { id: "r2", author: "Sarah", text: "Me too! Let's meet at the concession stand", upvotes: 8, downvotes: 0, time: "9:37pm" },
+      ]},
+      { id: "c3", author: "Annie", text: "Any recommendations for parking?", upvotes: 189, downvotes: 0, time: "9:02pm", replies: [] },
+      { id: "c4", author: "Mike", text: "Sound quality is amazing tonight!", upvotes: 156, downvotes: 2, time: "9:15pm", replies: [] },
+      { id: "c5", author: "Lisa", text: "Merch line is crazy long", upvotes: 98, downvotes: 0, time: "8:45pm", replies: [] },
+      { id: "c6", author: "Tom", text: "Best concert I've been to this year", upvotes: 143, downvotes: 1, time: "9:40pm", replies: [] },
+      { id: "c7", author: "Emma", text: "Traffic getting in was brutal", upvotes: 67, downvotes: 3, time: "8:30pm", replies: [] },
+      { id: "c8", author: "Chris", text: "Food prices are insane but the nachos are worth it", upvotes: 89, downvotes: 5, time: "8:55pm", replies: [] },
+      { id: "c9", author: "Rachel", text: "Anyone know what time the show ends?", upvotes: 45, downvotes: 0, time: "9:05pm", replies: [] },
+      { id: "c10", author: "Steve", text: "View from section 420 is perfect!", upvotes: 112, downvotes: 1, time: "9:20pm", replies: [] },
+    ],
+  },
+  {
+    id: "lincoln",
+    name: "Lincoln Franklin Field",
+    icon: "stadium",
+    xPct: 45,
+    yPct: 80,
+    count: 2610,
+    details: {
+      event: "Eagles Open Practice",
+      date: "09/20/2025",
+      time: "10:00AM EST",
+      address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
     },
-    {
-      id: "monster",
-      name: "Monster Jam",
-      xPct: 91,
-      yPct: 78,
-      count: 2,
-      details: {
-        event: "Monster Jam Qualifiers",
-        date: "09/25/2025",
-        time: "4:00PM EST",
-        address: "3601 S Broad St, Philadelphia, PA 19148",
-      },
-      comments: [
-        { id: "c5", author: "Sam", text: "Crew is still setting up the track.", upvotes: 3, downvotes: 0, time: "3:10pm", replies: [] },
-      ],
+    comments: [
+      { id: "c11", author: "Rob", text: "Security lines are moving fast.", upvotes: 42, downvotes: 0, time: "9:05am", replies: [] },
+      { id: "c12", author: "Nina", text: "Team is warming up now.", upvotes: 38, downvotes: 0, time: "9:45am", replies: [] },
+    ],
+  },
+  {
+    id: "monster",
+    name: "Monster Jam",
+    icon: "stadia_controller",
+    xPct: 91,
+    yPct: 78,
+    count: 48,
+    details: {
+      event: "Monster Jam Qualifiers",
+      date: "09/25/2025",
+      time: "4:00PM EST",
+      address: "3601 S Broad St, Philadelphia, PA 19148",
     },
-    {
-      id: "smokey",
-      name: "Smokey Joe's",
-      xPct: 18,
-      yPct: 62,
-      count: 24,
-      details: {
-        event: "Student Night",
-        date: "09/18/2025",
-        time: "11:30PM EST",
-        address: "40th & Walnut St, Philadelphia, PA 19104",
-      },
-      comments: [
-        { id: "c6", author: "Jess", text: "Line wraps around the corner right now.", upvotes: 22, downvotes: 1, time: "11:35pm", replies: [] },
-        { id: "c7", author: "Leo", text: "DJ just switched to throwbacks.", upvotes: 15, downvotes: 0, time: "11:38pm", replies: [] },
-      ],
+    comments: [
+      { id: "c13", author: "Sam", text: "Crew is still setting up the track.", upvotes: 3, downvotes: 0, time: "3:10pm", replies: [] },
+    ],
+  },
+  {
+    id: "smokey",
+    name: "Smokey Joe's",
+    icon: "sports_bar",
+    xPct: 18,
+    yPct: 62,
+    count: 121,
+    details: {
+      event: "Student Night",
+      date: "09/18/2025",
+      time: "11:30PM EST",
+      address: "40th & Walnut St, Philadelphia, PA 19104",
     },
+    comments: [
+      { id: "c14", author: "Jess", text: "Line wraps around the corner right now.", upvotes: 22, downvotes: 1, time: "11:35pm", replies: [] },
+      { id: "c15", author: "Leo", text: "DJ just switched to throwbacks.", upvotes: 15, downvotes: 0, time: "11:38pm", replies: [] },
+    ],
+  },
+  {
+    id: "theatre",
+    name: "Theatre of Living Arts",
+    icon: "music_note",
+    xPct: 66,
+    yPct: 48,
+    count: 312,
+    details: {
+      event: "All Time Low — Special Set",
+      date: "09/21/2025",
+      time: "8:00PM EST",
+      address: "334 South St, Philadelphia, PA 19147",
+    },
+    comments: [
+      { id: "c16", author: "Priya", text: "Doors just opened and merch is stocked.", upvotes: 12, downvotes: 0, time: "7:15pm", replies: [] },
+    ],
+  },
+  {
+    id: "mcgillins",
+    name: "McGillin's Olde Ale House",
+    icon: "sports_bar",
+    xPct: 60,
+    yPct: 40,
+    count: 1941,
+    details: {
+      event: "Trivia Night Finals",
+      date: "09/19/2025",
+      time: "9:00PM EST",
+      address: "1310 Drury St, Philadelphia, PA 19107",
+    },
+    comments: [
+      { id: "c17", author: "Kelly", text: "Second round questions are tough!", upvotes: 31, downvotes: 0, time: "9:25pm", replies: [] },
+    ],
+  },
+  {
+    id: "franklinHall",
+    name: "Franklin Music Hall",
+    icon: "music_note",
+    xPct: 54,
+    yPct: 33,
+    count: 1337,
+    details: {
+      event: "Electronic Showcase",
+      date: "09/22/2025",
+      time: "9:30PM EST",
+      address: "421 N 7th St, Philadelphia, PA 19123",
+    },
+    comments: [
+      { id: "c18", author: "Marco", text: "Light check happening now.", upvotes: 18, downvotes: 0, time: "8:55pm", replies: [] },
+    ],
+  },
+  {
+    id: "artmuseum",
+    name: "Philadelphia Museum of Art",
+    icon: "museum",
+    xPct: 48,
+    yPct: 18,
+    count: 1264,
+    details: {
+      event: "Late Night Exhibit Tour",
+      date: "09/21/2025",
+      time: "7:30PM EST",
+      address: "2600 Benjamin Franklin Pkwy, Philadelphia, PA 19130",
+    },
+    comments: [
+      { id: "c19", author: "Andrea", text: "Great photo ops in the modern wing tonight.", upvotes: 44, downvotes: 0, time: "7:40pm", replies: [] },
+    ],
+  },
 ];
 
 const QUICK_ACTIONS = [
@@ -458,6 +533,41 @@ const NEARBY_CATEGORIES = [
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
 
+const POPULAR_NOW = [
+  {
+    id: "popular-lincoln",
+    venueId: "lincoln",
+    name: "Lincoln Franklin Field",
+    address: "1 Lincoln Financial Field Way",
+    icon: "stadium",
+    count: 2610,
+  },
+  {
+    id: "popular-mcgillins",
+    venueId: "mcgillins",
+    name: "McGillin's Olde Ale House",
+    address: "1310 Drury St",
+    icon: "sports_bar",
+    count: 1941,
+  },
+  {
+    id: "popular-franklin",
+    venueId: "franklinHall",
+    name: "Franklin Music Hall",
+    address: "421 N Seventh St",
+    icon: "music_note",
+    count: 1337,
+  },
+  {
+    id: "popular-art",
+    venueId: "artmuseum",
+    name: "Philadelphia Museum of Art",
+    address: "2600 Benjamin Franklin Pkwy",
+    icon: "museum",
+    count: 1264,
+  },
+];
+
 const ALERTS = [
   {
     id: 1,
@@ -489,6 +599,8 @@ const DEFAULT_SAVED_PLACES = [
   {
     id: "cbp",
     name: "Citizens Bank Park",
+    icon: "stadium",
+    count: 547,
     details: {
       event: "Concert with The Lumineers",
       date: "09/19/2025",
@@ -496,62 +608,125 @@ const DEFAULT_SAVED_PLACES = [
       address: "One Citizens Bank Way, Philadelphia, PA 19148",
     },
   },
+  {
+    id: "theatre",
+    name: "Theatre of Living Arts",
+    icon: "music_note",
+    count: 312,
+    details: {
+      event: "All Time Low — Special Set",
+      date: "09/21/2025",
+      time: "8:00PM EST",
+      address: "334 South St, Philadelphia, PA 19147",
+    },
+  },
+  {
+    id: "smokey",
+    name: "Smokey Joe's",
+    icon: "sports_bar",
+    count: 121,
+    details: {
+      event: "Student Night",
+      date: "09/18/2025",
+      time: "11:30PM EST",
+      address: "40th & Walnut St, Philadelphia, PA 19104",
+    },
+  },
 ];
 
 function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
-  const handleKeyPress = (event, id) => {
+  const formatAddress = (address) => {
+    if (!address) return "";
+    return address.split(",")[0];
+  };
+
+  const handleKeyPress = (event, callback) => {
+    if (!callback) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      onShowVenue?.(id);
+      callback();
     }
   };
 
-  if (!savedPlaces || savedPlaces.length === 0) {
+  const renderRow = (place, { removable = false, targetId }) => {
+    const onActivate =
+      targetId && onShowVenue ? () => onShowVenue(targetId) : null;
+    const clickable = Boolean(onActivate);
+    const tabIndex = clickable ? 0 : -1;
+
     return (
-      <div>
-        <div className="title" style={{ marginBottom: 10 }}>My Places</div>
-        <p style={{ opacity: 0.75 }}>
-          Save a venue from the map to see it listed here for quick access.
-        </p>
-      </div>
+      <li
+        key={place.id || targetId}
+        className={`place-row ${clickable ? "place-row-clickable" : ""}`}
+        role={clickable ? "button" : undefined}
+        tabIndex={tabIndex}
+        onClick={onActivate}
+        onKeyDown={(event) => handleKeyPress(event, onActivate)}
+      >
+        <div className="place-icon">
+          <span className="material-symbols-outlined">
+            {place.icon || "location_on"}
+          </span>
+          {place.count !== undefined && (
+            <span className="place-count">{place.count}</span>
+          )}
+        </div>
+        <div className="place-row-details">
+          <div className="place-row-name">{place.name}</div>
+          <div className="place-row-address">
+            {place.address || formatAddress(place.details?.address)}
+          </div>
+        </div>
+        {removable && (
+          <button
+            type="button"
+            className="remove-icon-btn"
+            aria-label={`Remove ${place.name}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              onRemoveSaved?.(place.id);
+            }}
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        )}
+      </li>
     );
-  }
+  };
 
   return (
-    <div style={{ width: "100%" }}>
-      <div className="title" style={{ marginBottom: 16 }}>My Places</div>
-      <ul className="my-places-list">
-        {savedPlaces.map((place) => (
-          <li
-            key={place.id}
-            className="saved-card saved-card-clickable"
-            role="button"
-            tabIndex={0}
-            onClick={() => onShowVenue?.(place.id)}
-            onKeyDown={(event) => handleKeyPress(event, place.id)}
-          >
-            <div>
-              <div className="saved-card-name">{place.name}</div>
-              <div className="saved-card-meta">
-                {place.details?.event && <div>{place.details.event}</div>}
-                <div>
-                  Date {place.details?.date} · Time {place.details?.time}
-                </div>
-                <div>{place.details?.address}</div>
+    <div className="places-page">
+      <section className="places-section">
+        <div className="places-heading">My Places</div>
+        <div className="places-panel">
+          <div className="places-scroll">
+            {savedPlaces && savedPlaces.length > 0 ? (
+              <ul className="places-list">
+                {savedPlaces.map((place) =>
+                  renderRow(place, { removable: true, targetId: place.id })
+                )}
+              </ul>
+            ) : (
+              <div className="places-empty">
+                Save a venue from the map to see it listed here for quick access.
               </div>
-            </div>
-            <button
-              className="outline-btn small"
-              onClick={(event) => {
-                event.stopPropagation();
-                onRemoveSaved(place.id);
-              }}
-            >
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+            )}
+          </div>
+        </div>
+      </section>
+      <section className="places-section">
+        <div className="places-heading">Popular Now</div>
+        <div className="places-panel">
+          <ul className="places-list">
+            {POPULAR_NOW.map((place) =>
+              renderRow(place, {
+                removable: false,
+                targetId: place.venueId,
+              })
+            )}
+          </ul>
+        </div>
+      </section>
     </div>
   );
 }
