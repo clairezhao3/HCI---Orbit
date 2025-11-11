@@ -495,6 +495,7 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: -40,
     yPct: -40,
+    initialCount: 18,
     details: {
       event: "Trivia Night Finals",
       date: "09/19/2025",
@@ -511,6 +512,7 @@ const RAW_VENUES = [
     icon: "music_note",
     xPct: -40,
     yPct: -40,
+    initialCount: 17,
     details: {
       event: "Electronic Showcase",
       date: "09/22/2025",
@@ -527,6 +529,7 @@ const RAW_VENUES = [
     icon: "museum",
     xPct: -40,
     yPct: -40,
+    initialCount: 12,
     details: {
       event: "Late Night Exhibit Tour",
       date: "09/21/2025",
