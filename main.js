@@ -830,13 +830,12 @@ function Pin({ xPct, yPct, count, label, onClick }) {
 }
   
 const RECENT_PLACES = [
-  { id: 1, title: "Citizens Bank Park", city: "Philadelphia" },
-  { id: 2, title: "bars", city: "Philadelphia" },
-  { id: 3, title: "Bala Cynwyd", city: "Philadelphia" },
-  { id: 4, title: "Greek Lady", city: "Philadelphia" },
-  { id: 5, title: "Cira Green", city: "Philadelphia" },
-  { id: 6, title: "Franklin Field", city: "Philadelphia" },
-  { id: 7, title: "concert halls", city: "Philadelphia" },
+  { id: "recent-cbp", title: "Citizens Bank Park", city: "Philadelphia", venueId: "cbp" },
+  { id: "recent-live", title: "Live! Casino", city: "Philadelphia", venueId: "liveCasino" },
+  { id: "recent-bulls", title: "Bull's BBQ", city: "Philadelphia", venueId: "bullsBbq" },
+  { id: "recent-shake", title: "Shake Shack", city: "Philadelphia", venueId: "shakeShack" },
+  { id: "recent-third", title: "Third Base Gate", city: "Philadelphia", venueId: "turfClub" },
+  { id: "recent-stateside", title: "Stateside Live", city: "Philadelphia", venueId: "stateside" },
 ];
 
 const NEARBY_CATEGORIES = [
@@ -1112,7 +1111,7 @@ function AlertsScreen({ onShowVenue }) {
   );
 }
 
-function SearchOverlay() {
+function SearchOverlay({ onShowVenue }) {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const inputRef = React.useRef(null);
@@ -1131,11 +1130,20 @@ function SearchOverlay() {
     setKeyboardVisible(false);
   };
 
-  const list = query
+  const list = (query
     ? RECENT_PLACES.filter((r) =>
         `${r.title} ${r.city}`.toLowerCase().includes(query.toLowerCase())
       )
-    : RECENT_PLACES;
+    : RECENT_PLACES
+  ).filter((item) => !!item.venueId);
+
+  const handleRecentSelect = (venueId) => {
+    if (!venueId) return;
+    onShowVenue?.(venueId);
+    setOpen(false);
+    setQuery("");
+    setKeyboardVisible(false);
+  };
 
   const card = (
     <div className="search-card">
@@ -1162,19 +1170,22 @@ function SearchOverlay() {
       <div className="divider" />
       <div className="recents-header">
         <span className="title">Recents</span>
-        <button type="button" className="link-button">
-          More
-        </button>
       </div>
       <ul className="recents-list">
         {list.map((item) => (
           <li key={item.id}>
-            <span className="material-symbols-outlined">search</span>
-            <div className="recent-text">
-              <span className="recent-name">{item.title}</span>
-              <span className="dot">&bull;</span>
-              <span className="recent-city">{item.city}</span>
-            </div>
+            <button
+              type="button"
+              className="recent-item"
+              onClick={() => handleRecentSelect(item.venueId)}
+            >
+              <span className="material-symbols-outlined">search</span>
+              <div className="recent-text">
+                <span className="recent-name">{item.title}</span>
+                <span className="dot">&bull;</span>
+                <span className="recent-city">{item.city}</span>
+              </div>
+            </button>
           </li>
         ))}
       </ul>
@@ -1246,6 +1257,18 @@ function MapExperience({
     setSelectedVenue(venue);
     setSheetState("peek");
   };
+
+  const handleSearchSelect = React.useCallback(
+    (venueId) => {
+      if (!venueId) return;
+      const targetVenue = venues.find((v) => v.id === venueId);
+      if (targetVenue) {
+        setSelectedVenue(targetVenue);
+        setSheetState("full");
+      }
+    },
+    [venues]
+  );
 
   const handleClose = () => {
     setSheetState("closed");
@@ -1519,7 +1542,7 @@ function MapExperience({
 
   return (
     <div className="map-layout">
-      <SearchOverlay />
+      <SearchOverlay onShowVenue={handleSearchSelect} />
       <div className="map-viewport">
         <MapStatic venues={venues} onSelectVenue={handleVenueSelect} />
         <BottomSheet
