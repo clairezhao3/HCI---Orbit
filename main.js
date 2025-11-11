@@ -97,6 +97,7 @@ function App() {
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [sheetOpen, setSheetOpen] = React.useState(false);
+    const [venues, setVenues] = React.useState(INITIAL_VENUES);
     const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
     const [pendingVenueId, setPendingVenueId] = React.useState(null);
     const handleExternalVenueHandled = React.useCallback(
@@ -133,6 +134,25 @@ function App() {
       setSavedPlaces((prev) => prev.filter((p) => p.id !== id));
     }, []);
 
+    const updateVenues = React.useCallback((updater) => {
+      setVenues((prev) => {
+        const next = typeof updater === "function" ? updater(prev) : updater;
+        setSavedPlaces((prevSaved) =>
+          prevSaved.map((place) => {
+            const updatedVenue = next.find((v) => v.id === place.id);
+            if (!updatedVenue) return place;
+            return {
+              ...place,
+              name: updatedVenue.name,
+              details: updatedVenue.details,
+              count: updatedVenue.count,
+            };
+          })
+        );
+        return next;
+      });
+    }, []);
+
     return (
         <>
         <KeyboardContext.Provider value={{ setKeyboardVisible, keyboardHeight }}>
@@ -144,6 +164,8 @@ function App() {
             renderMap={() =>
               tab === "map" ? (
                 <MapExperience
+                  venues={venues}
+                  onUpdateVenues={updateVenues}
                   onSheetVisibilityChange={setSheetOpen}
                   savedPlaces={savedPlaces}
                   onToggleSavePlace={handleToggleSavePlace}
@@ -1198,13 +1220,14 @@ function SearchOverlay() {
 }
 
 function MapExperience({
+  venues = [],
+  onUpdateVenues = () => {},
   onSheetVisibilityChange,
   savedPlaces = [],
   onToggleSavePlace,
   openVenueId,
   onExternalVenueHandled,
 }) {
-  const [venues, setVenues] = React.useState(INITIAL_VENUES);
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
@@ -1245,7 +1268,7 @@ function MapExperience({
   }, []);
 
   const handleAddComment = (venueId, commentText) => {
-    setVenues(prevVenues => 
+    onUpdateVenues(prevVenues => 
       prevVenues.map(v => {
         if (v.id === venueId) {
           const now = new Date();
@@ -1293,7 +1316,7 @@ function MapExperience({
   }, [openVenueId, venues, onExternalVenueHandled]);
 
   const handleEditComment = (venueId, commentId, newText, isReply = false, parentCommentId = null) => {
-    setVenues(prevVenues => 
+    onUpdateVenues(prevVenues => 
       prevVenues.map(v => {
         if (v.id === venueId) {
           const updatedVenue = {
@@ -1325,7 +1348,7 @@ function MapExperience({
   };
 
   const handleDeleteComment = (venueId, commentId, isReply = false, parentCommentId = null) => {
-    setVenues(prevVenues => 
+    onUpdateVenues(prevVenues => 
       prevVenues.map(v => {
         if (v.id === venueId) {
           let updatedVenue;
@@ -1369,7 +1392,7 @@ function MapExperience({
   };
 
   const handleAddReply = (venueId, commentId, replyText) => {
-    setVenues(prevVenues => 
+    onUpdateVenues(prevVenues => 
       prevVenues.map(v => {
         if (v.id === venueId) {
           const now = new Date();
@@ -1415,7 +1438,7 @@ function MapExperience({
       return;
     }
 
-    setVenues(prevVenues => 
+    onUpdateVenues(prevVenues => 
       prevVenues.map(v => {
         if (v.id === venueId) {
           const updatedVenue = {
