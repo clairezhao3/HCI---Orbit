@@ -22,6 +22,14 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved }) {
     );
   }
 
+  if (tab === "alerts") {
+    return (
+      <div className="screen screen-places" aria-label="Alerts">
+        <AlertsScreen />
+      </div>
+    );
+  }
+
   return (
     <div className="screen">
       <div className="title" style={{ fontSize: 22, marginBottom: 6 }}>
@@ -415,6 +423,30 @@ const NEARBY_CATEGORIES = [
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
 
+const ALERTS = [
+  {
+    id: 1,
+    location: "Citizens Bank Park",
+    date: "9/19",
+    time: "9:41pm",
+    lines: ["Laura replied to you:", "Yes! Everyone is dancing."],
+  },
+  {
+    id: 2,
+    location: "Citizens Bank Park",
+    date: "9/19",
+    time: "9:00pm",
+    lines: ["Active Event starting now!", "Concert with The Lumineers"],
+  },
+  {
+    id: 3,
+    location: "Smokey Joe's",
+    date: "9/18",
+    time: "11:42pm",
+    lines: ["Recent spike in activity:", "See what others are saying!"],
+  },
+];
+
 function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
   if (!savedPlaces || savedPlaces.length === 0) {
     return (
@@ -456,6 +488,41 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved }) {
   );
 }
 
+
+function AlertsScreen() {
+  return (
+    <div style={{ width: "100%" }} className="alerts-screen">
+      <div className="title" style={{ marginBottom: 16 }}>Alerts</div>
+      <ul className="my-places-list alerts-list">
+        {ALERTS.map((alert) => (
+          <li key={alert.id} className="alert-card">
+            <div className="alert-info">
+              <div className="alert-header">
+                <div className="alert-location">{alert.location}</div>
+                <div className="alert-timestamp">
+                  <span>{alert.date}</span>
+                  <span>{alert.time}</span>
+                </div>
+              </div>
+              <div className="alert-divider" />
+              <div className="alert-body">
+                {alert.lines.map((line, idx) => (
+                  <div key={idx}>{line}</div>
+                ))}
+              </div>
+            </div>
+            <span
+              className="material-symbols-outlined alert-arrow"
+              aria-hidden="true"
+            >
+              chevron_right
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function SearchOverlay() {
   const [open, setOpen] = React.useState(false);
