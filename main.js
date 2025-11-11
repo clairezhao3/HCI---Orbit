@@ -26,6 +26,14 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
     );
   }
 
+  if (tab === "nearby") {
+    return (
+      <div className="screen screen-places" aria-label="Nearby">
+        <NearbyScreen onShowVenue={onShowVenue} />
+      </div>
+    );
+  }
+
   if (tab === "alerts") {
     return (
       <div className="screen screen-places" aria-label="Alerts">
@@ -631,6 +639,58 @@ const USER_LOCATION = {
   yPct: 55,
 };
 
+function PlaceRow({ place, onActivate, removable = false, onRemove }) {
+  const clickable = typeof onActivate === "function";
+  const tabIndex = clickable ? 0 : -1;
+  const primaryAddress =
+    place.address ||
+    (place.details?.address ? place.details.address.split(",")[0] : "");
+
+  const handleKeyPress = (event) => {
+    if (!clickable) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onActivate();
+    }
+  };
+
+  return (
+    <li
+      className={`place-row ${clickable ? "place-row-clickable" : ""}`}
+      role={clickable ? "button" : undefined}
+      tabIndex={tabIndex}
+      onClick={clickable ? onActivate : undefined}
+      onKeyDown={handleKeyPress}
+    >
+      <div className="place-icon">
+        <span className="material-symbols-outlined">
+          {place.icon || "location_on"}
+        </span>
+        {place.count !== undefined && (
+          <span className="place-count">{place.count}</span>
+        )}
+      </div>
+      <div className="place-row-details">
+        <div className="place-row-name">{place.name}</div>
+        <div className="place-row-address">{primaryAddress}</div>
+      </div>
+      {removable && (
+        <button
+          type="button"
+          className="remove-icon-btn"
+          aria-label={`Remove ${place.name}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onRemove?.();
+          }}
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      )}
+    </li>
+  );
+}
+
 const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
   .map((venueId) => {
     const venue = INITIAL_VENUES.find((v) => v.id === venueId);
@@ -646,65 +706,6 @@ const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
   .filter(Boolean);
 
 function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
-  const formatAddress = (address) => {
-    if (!address) return "";
-    return address.split(",")[0];
-  };
-
-  const handleKeyPress = (event, callback) => {
-    if (!callback) return;
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      callback();
-    }
-  };
-
-  const renderRow = (place, { removable = false, targetId }) => {
-    const onActivate =
-      targetId && onShowVenue ? () => onShowVenue(targetId) : null;
-    const clickable = Boolean(onActivate);
-    const tabIndex = clickable ? 0 : -1;
-
-    return (
-      <li
-        key={place.id || targetId}
-        className={`place-row ${clickable ? "place-row-clickable" : ""}`}
-        role={clickable ? "button" : undefined}
-        tabIndex={tabIndex}
-        onClick={onActivate}
-        onKeyDown={(event) => handleKeyPress(event, onActivate)}
-      >
-        <div className="place-icon">
-          <span className="material-symbols-outlined">
-            {place.icon || "location_on"}
-          </span>
-          {place.count !== undefined && (
-            <span className="place-count">{place.count}</span>
-          )}
-        </div>
-        <div className="place-row-details">
-          <div className="place-row-name">{place.name}</div>
-          <div className="place-row-address">
-            {place.address || formatAddress(place.details?.address)}
-          </div>
-        </div>
-        {removable && (
-          <button
-            type="button"
-            className="remove-icon-btn"
-            aria-label={`Remove ${place.name}`}
-            onClick={(event) => {
-              event.stopPropagation();
-              onRemoveSaved?.(place.id);
-            }}
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
-        )}
-      </li>
-    );
-  };
-
   return (
     <div className="places-page">
       <section className="places-section">
@@ -713,9 +714,19 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
           <div className="places-scroll">
             {savedPlaces && savedPlaces.length > 0 ? (
               <ul className="places-list">
-                {savedPlaces.map((place) =>
-                  renderRow(place, { removable: true, targetId: place.id })
-                )}
+                {savedPlaces.map((place) => (
+                  <PlaceRow
+                    key={place.id}
+                    place={place}
+                    removable
+                    onRemove={() => onRemoveSaved?.(place.id)}
+                    onActivate={
+                      place.id && onShowVenue
+                        ? () => onShowVenue(place.id)
+                        : undefined
+                    }
+                  />
+                ))}
               </ul>
             ) : (
               <div className="places-empty">
@@ -729,12 +740,38 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
         <div className="places-heading">Popular Now</div>
         <div className="places-panel">
           <ul className="places-list">
-            {POPULAR_NOW.map((place) =>
-              renderRow(place, {
-                removable: false,
-                targetId: place.venueId,
-              })
-            )}
+            {POPULAR_NOW.map((place) => (
+              <PlaceRow
+                key={place.id}
+                place={place}
+                onActivate={
+                  onShowVenue ? () => onShowVenue(place.venueId) : undefined
+                }
+              />
+            ))}
+          </ul>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function NearbyScreen({ onShowVenue }) {
+  return (
+    <div className="places-page">
+      <section className="places-section">
+        <div className="places-heading">Nearby</div>
+        <div className="places-panel">
+          <ul className="places-list">
+            {POPULAR_NOW.map((place) => (
+              <PlaceRow
+                key={`nearby-${place.id}`}
+                place={place}
+                onActivate={
+                  onShowVenue ? () => onShowVenue(place.venueId) : undefined
+                }
+              />
+            ))}
           </ul>
         </div>
       </section>
