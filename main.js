@@ -333,14 +333,15 @@ function pinColor(count) {
   return `hsl(28, 95%, ${lightness}%)`;
 }
   
-const INITIAL_VENUES = [
+const MAX_INITIAL_COMMENTS = 20;
+
+const RAW_VENUES = [
   {
     id: "cbp",
     name: "Citizens Bank Park",
     icon: "stadium",
     xPct: 57,
     yPct: 26,
-    count: 547,
     details: {
       event: "Concert with The Lumineers",
       date: "09/19/2025",
@@ -369,7 +370,6 @@ const INITIAL_VENUES = [
     icon: "stadium",
     xPct: 45,
     yPct: 80,
-    count: 2610,
     details: {
       event: "Eagles Open Practice",
       date: "09/20/2025",
@@ -387,7 +387,6 @@ const INITIAL_VENUES = [
     icon: "stadia_controller",
     xPct: 91,
     yPct: 78,
-    count: 48,
     details: {
       event: "Monster Jam Qualifiers",
       date: "09/25/2025",
@@ -404,7 +403,6 @@ const INITIAL_VENUES = [
     icon: "sports_bar",
     xPct: 18,
     yPct: 62,
-    count: 121,
     details: {
       event: "Student Night",
       date: "09/18/2025",
@@ -422,7 +420,6 @@ const INITIAL_VENUES = [
     icon: "music_note",
     xPct: 66,
     yPct: 48,
-    count: 312,
     details: {
       event: "All Time Low — Special Set",
       date: "09/21/2025",
@@ -439,7 +436,6 @@ const INITIAL_VENUES = [
     icon: "sports_bar",
     xPct: 60,
     yPct: 40,
-    count: 1941,
     details: {
       event: "Trivia Night Finals",
       date: "09/19/2025",
@@ -456,7 +452,6 @@ const INITIAL_VENUES = [
     icon: "music_note",
     xPct: 54,
     yPct: 33,
-    count: 1337,
     details: {
       event: "Electronic Showcase",
       date: "09/22/2025",
@@ -473,7 +468,6 @@ const INITIAL_VENUES = [
     icon: "museum",
     xPct: 48,
     yPct: 18,
-    count: 1264,
     details: {
       event: "Late Night Exhibit Tour",
       date: "09/21/2025",
@@ -485,6 +479,15 @@ const INITIAL_VENUES = [
     ],
   },
 ];
+
+const INITIAL_VENUES = RAW_VENUES.map((venue) => {
+  const comments = (venue.comments || []).slice(0, MAX_INITIAL_COMMENTS);
+  return {
+    ...venue,
+    comments,
+    count: comments.length,
+  };
+});
 
 const QUICK_ACTIONS = [
   { id: "walk", icon: "directions_walk", label: "5 min" },
@@ -533,40 +536,20 @@ const NEARBY_CATEGORIES = [
   { id: 4, icon: "local_parking", label: "Parking" },
 ];
 
-const POPULAR_NOW = [
-  {
-    id: "popular-lincoln",
-    venueId: "lincoln",
-    name: "Lincoln Franklin Field",
-    address: "1 Lincoln Financial Field Way",
-    icon: "stadium",
-    count: 2610,
-  },
-  {
-    id: "popular-mcgillins",
-    venueId: "mcgillins",
-    name: "McGillin's Olde Ale House",
-    address: "1310 Drury St",
-    icon: "sports_bar",
-    count: 1941,
-  },
-  {
-    id: "popular-franklin",
-    venueId: "franklinHall",
-    name: "Franklin Music Hall",
-    address: "421 N Seventh St",
-    icon: "music_note",
-    count: 1337,
-  },
-  {
-    id: "popular-art",
-    venueId: "artmuseum",
-    name: "Philadelphia Museum of Art",
-    address: "2600 Benjamin Franklin Pkwy",
-    icon: "museum",
-    count: 1264,
-  },
-];
+const POPULAR_NOW = ["lincoln", "mcgillins", "franklinHall", "artmuseum"]
+  .map((venueId) => {
+    const venue = INITIAL_VENUES.find((v) => v.id === venueId);
+    if (!venue) return null;
+    return {
+      id: `popular-${venueId}`,
+      venueId,
+      name: venue.name,
+      address: venue.details?.address?.split(",")[0] || "",
+      icon: venue.icon,
+      count: venue.count,
+    };
+  })
+  .filter(Boolean);
 
 const ALERTS = [
   {
@@ -595,44 +578,19 @@ const ALERTS = [
   },
 ];
 
-const DEFAULT_SAVED_PLACES = [
-  {
-    id: "cbp",
-    name: "Citizens Bank Park",
-    icon: "stadium",
-    count: 547,
-    details: {
-      event: "Concert with The Lumineers",
-      date: "09/19/2025",
-      time: "9:00PM EST",
-      address: "One Citizens Bank Way, Philadelphia, PA 19148",
-    },
-  },
-  {
-    id: "theatre",
-    name: "Theatre of Living Arts",
-    icon: "music_note",
-    count: 312,
-    details: {
-      event: "All Time Low — Special Set",
-      date: "09/21/2025",
-      time: "8:00PM EST",
-      address: "334 South St, Philadelphia, PA 19147",
-    },
-  },
-  {
-    id: "smokey",
-    name: "Smokey Joe's",
-    icon: "sports_bar",
-    count: 121,
-    details: {
-      event: "Student Night",
-      date: "09/18/2025",
-      time: "11:30PM EST",
-      address: "40th & Walnut St, Philadelphia, PA 19104",
-    },
-  },
-];
+const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
+  .map((venueId) => {
+    const venue = INITIAL_VENUES.find((v) => v.id === venueId);
+    if (!venue) return null;
+    return {
+      id: venue.id,
+      name: venue.name,
+      icon: venue.icon,
+      count: venue.count,
+      details: venue.details,
+    };
+  })
+  .filter(Boolean);
 
 function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
   const formatAddress = (address) => {
