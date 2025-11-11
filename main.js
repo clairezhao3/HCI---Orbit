@@ -82,7 +82,7 @@ function App() {
     const [keyboardVisible, setKeyboardVisible] = React.useState(false);
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [sheetOpen, setSheetOpen] = React.useState(false);
-    const [savedPlaces, setSavedPlaces] = React.useState([]);
+  const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
 
     const handleToggleSavePlace = React.useCallback((venue) => {
       setSavedPlaces((prev) => {
@@ -444,6 +444,19 @@ const ALERTS = [
     date: "9/18",
     time: "11:42pm",
     lines: ["Recent spike in activity:", "See what others are saying!"],
+  },
+];
+
+const DEFAULT_SAVED_PLACES = [
+  {
+    id: "cbp",
+    name: "Citizens Bank Park",
+    details: {
+      event: "Concert with The Lumineers",
+      date: "09/19/2025",
+      time: "9:00PM EST",
+      address: "One Citizens Bank Way, Philadelphia, PA 19148",
+    },
   },
 ];
 
