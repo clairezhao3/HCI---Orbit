@@ -1,4 +1,12 @@
-function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
+function Screen({
+  tab,
+  renderMap,
+  savedPlaces,
+  onRemoveSaved,
+  onShowVenue,
+  popularPlaces,
+  nearbyDestinations,
+}) {
   const labels = {
     map: "Map",
     places: "My Places",
@@ -21,6 +29,7 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
           savedPlaces={savedPlaces}
           onRemoveSaved={onRemoveSaved}
           onShowVenue={onShowVenue}
+          popularPlaces={popularPlaces}
         />
       </div>
     );
@@ -32,7 +41,10 @@ function Screen({ tab, renderMap, savedPlaces, onRemoveSaved, onShowVenue }) {
         className="screen screen-places nearby-screen-container"
         aria-label="Nearby"
       >
-        <NearbyScreen onShowVenue={onShowVenue} />
+        <NearbyScreen
+          onShowVenue={onShowVenue}
+          nearbyDestinations={nearbyDestinations}
+        />
       </div>
     );
   }
@@ -100,6 +112,14 @@ function App() {
     const [venues, setVenues] = React.useState(INITIAL_VENUES);
     const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
     const [pendingVenueId, setPendingVenueId] = React.useState(null);
+    const popularPlaces = React.useMemo(
+      () => buildPopularNow(venues),
+      [venues]
+    );
+    const nearbyDestinations = React.useMemo(
+      () => buildNearbyDestinations(venues),
+      [venues]
+    );
     const handleExternalVenueHandled = React.useCallback(
       () => setPendingVenueId(null),
       []
@@ -161,6 +181,8 @@ function App() {
             savedPlaces={savedPlaces}
             onRemoveSaved={handleRemoveSaved}
             onShowVenue={handleShowVenue}
+            popularPlaces={popularPlaces}
+            nearbyDestinations={nearbyDestinations}
             renderMap={() =>
               tab === "map" ? (
                 <MapExperience
@@ -886,23 +908,28 @@ const NEARBY_DESTINATION_CONFIG = [
   { venueId: "liveCasino", minutes: 14 },
 ];
 
-const NEARBY_DESTINATIONS = NEARBY_DESTINATION_CONFIG.map(({ venueId, minutes }) => {
-  const venue = INITIAL_VENUES.find((v) => v.id === venueId);
-  if (!venue) return null;
-  const topCommentCount = venue.comments?.length ?? 0;
-  return {
-    id: venueId,
-    venueId,
-    name: venue.name,
-    icon: venue.icon,
-    count: topCommentCount,
-    minutes,
-  };
-}).filter(Boolean);
+const POPULAR_NOW_SOURCE_IDS = ["lincoln", "mcgillins", "franklinHall", "artmuseum"];
 
-const POPULAR_NOW = ["lincoln", "mcgillins", "franklinHall", "artmuseum"]
-  .map((venueId) => {
-    const venue = INITIAL_VENUES.find((v) => v.id === venueId);
+function buildNearbyDestinations(venues = []) {
+  const venueMap = new Map(venues.map((venue) => [venue.id, venue]));
+  return NEARBY_DESTINATION_CONFIG.map(({ venueId, minutes }) => {
+    const venue = venueMap.get(venueId);
+    if (!venue) return null;
+    return {
+      id: venueId,
+      venueId,
+      name: venue.name,
+      icon: venue.icon,
+      count: venue.comments?.length ?? 0,
+      minutes,
+    };
+  }).filter(Boolean);
+}
+
+function buildPopularNow(venues = []) {
+  const venueMap = new Map(venues.map((venue) => [venue.id, venue]));
+  return POPULAR_NOW_SOURCE_IDS.map((venueId) => {
+    const venue = venueMap.get(venueId);
     if (!venue) return null;
     return {
       id: `popular-${venueId}`,
@@ -910,10 +937,10 @@ const POPULAR_NOW = ["lincoln", "mcgillins", "franklinHall", "artmuseum"]
       name: venue.name,
       address: venue.details?.address?.split(",")[0] || "",
       icon: venue.icon,
-      count: venue.count,
+      count: venue.comments?.length ?? 0,
     };
-  })
-  .filter(Boolean);
+  }).filter(Boolean);
+}
 
 const ALERTS = [
   {
@@ -1029,7 +1056,12 @@ const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
   })
   .filter(Boolean);
 
-function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
+function MyPlacesScreen({
+  savedPlaces,
+  onRemoveSaved,
+  onShowVenue,
+  popularPlaces = [],
+}) {
   return (
     <div className="places-page">
       <section className="places-section">
@@ -1064,7 +1096,7 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
         <div className="places-heading">Popular Now</div>
         <div className="places-panel">
           <ul className="places-list">
-            {POPULAR_NOW.map((place) => (
+            {popularPlaces.map((place) => (
               <PlaceRow
                 key={place.id}
                 place={place}
@@ -1080,14 +1112,14 @@ function MyPlacesScreen({ savedPlaces, onRemoveSaved, onShowVenue }) {
   );
 }
 
-function NearbyScreen({ onShowVenue }) {
+function NearbyScreen({ onShowVenue, nearbyDestinations = [] }) {
   return (
     <div className="places-page nearby-page" aria-label="Nearby destinations">
       <section className="places-section">
         <div className="places-heading">Nearby</div>
         <div className="places-panel nearby-panel">
           <ul className="places-list nearby-list">
-            {NEARBY_DESTINATIONS.map((spot) => (
+            {nearbyDestinations.map((spot) => (
               <PlaceRow
                 key={spot.id}
                 place={{
