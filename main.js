@@ -360,7 +360,7 @@ function bubbleSize(count, {min=25, max=80} = {}) {
     return Math.round(min + (max - min) * norm);
   }
 
-const MAX_INITIAL_COMMENTS = 20;
+const MAX_INITIAL_COMMENTS = Infinity;
 
 const RAW_VENUES = [
   {
@@ -565,7 +565,6 @@ const RAW_VENUES = [
     xPct: -40,
     yPct: -40,
     initialCount: 28,
-    initialCount: 17,
     details: {
       event: "Electronic Showcase",
       date: "09/22/2025",
@@ -590,6 +589,17 @@ const RAW_VENUES = [
       { id: "franklin-c15", author: "Gia", text: "Merch signed vinyl limited to 100 copies.", upvotes: 16, downvotes: 0, time: "8:05pm", replies: [] },
       { id: "franklin-c16", author: "Rory", text: "They’re projecting fan art in the lobby.", upvotes: 11, downvotes: 0, time: "8:01pm", replies: [] },
       { id: "franklin-c17", author: "Lena", text: "Coat check located downstairs to the right.", upvotes: 5, downvotes: 0, time: "7:58pm", replies: [] },
+      { id: "franklin-c18", author: "Sora", text: "Hydration station stocked with free citrus water.", upvotes: 8, downvotes: 0, time: "7:54pm", replies: [] },
+      { id: "franklin-c19", author: "Eliot", text: "Poster wall makes for the best photo op.", upvotes: 10, downvotes: 0, time: "7:51pm", replies: [] },
+      { id: "franklin-c20", author: "Noa", text: "ADA platform has a clear view tonight.", upvotes: 9, downvotes: 0, time: "7:47pm", replies: [] },
+      { id: "franklin-c21", author: "Kian", text: "Vendors testing glowstick drones overhead.", upvotes: 13, downvotes: 0, time: "7:44pm", replies: [] },
+      { id: "franklin-c22", author: "Miri", text: "Queue playlist is all local DJs right now.", upvotes: 7, downvotes: 0, time: "7:40pm", replies: [] },
+      { id: "franklin-c23", author: "Ash", text: "Earplug dispensers freshly refilled.", upvotes: 6, downvotes: 0, time: "7:37pm", replies: [] },
+      { id: "franklin-c24", author: "Luca", text: "VIP lounge serving matcha spritzers.", upvotes: 12, downvotes: 0, time: "7:33pm", replies: [] },
+      { id: "franklin-c25", author: "Tess", text: "Charging lockers available by the main bar.", upvotes: 11, downvotes: 0, time: "7:29pm", replies: [] },
+      { id: "franklin-c26", author: "Bruno", text: "Sound engineer tweaking sub-bass—feels huge.", upvotes: 14, downvotes: 0, time: "7:25pm", replies: [] },
+      { id: "franklin-c27", author: "Ivy", text: "Merch desk handing out setlist zines.", upvotes: 10, downvotes: 0, time: "7:21pm", replies: [] },
+      { id: "franklin-c28", author: "Sol", text: "Patio food truck parked out front for breaks.", upvotes: 9, downvotes: 0, time: "7:17pm", replies: [] },
     ],
   },
   {
@@ -814,12 +824,10 @@ const RAW_VENUES = [
 
 const INITIAL_VENUES = RAW_VENUES.map((venue) => {
   const comments = (venue.comments || []).slice(0, MAX_INITIAL_COMMENTS);
-  const computedCount =
-    typeof venue.initialCount === "number" ? venue.initialCount : comments.length;
   return {
     ...venue,
     comments,
-    count: computedCount,
+    count: comments.length,
   };
 });
 
