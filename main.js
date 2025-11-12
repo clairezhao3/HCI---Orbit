@@ -891,7 +891,7 @@ function Pin({ xPct, yPct, count, label, onClick }) {
           top: `${yPct}%`,
           width: size,
           height: size,
-          backgroundColor: "#FFFFFFfff",
+          backgroundColor: "#FFFFFF",
           color: "#242629",
           transform: "translate(-50%, -50%)",
         }}
