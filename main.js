@@ -346,7 +346,7 @@ function Keyboard({ visible, onHeightChange, onRequestClose }) {
                       flex: isWide ? 3 : isAction ? 1.5 : 1,
                       height: 38,
                       background: activeShift
-                        ? '#fff'
+                        ? '#FFFFFF'
                         : isAction
                         ? 'rgba(174, 179, 190, 0.95)'
                         : 'white',
@@ -354,7 +354,7 @@ function Keyboard({ visible, onHeightChange, onRequestClose }) {
                       borderRadius: 5,
                       fontSize: key === 'space' ? 14 : 20,
                       fontWeight: activeShift ? 700 : 400,
-                      color: activeShift ? '#182F45' : '#000',
+                      color: activeShift ? '#182F45' : '#242629',
                       boxShadow: '0 1px 0 rgba(0,0,0,0.1)',
                       cursor: 'pointer',
                       display: 'flex',
@@ -891,8 +891,8 @@ function Pin({ xPct, yPct, count, label, onClick }) {
           top: `${yPct}%`,
           width: size,
           height: size,
-          backgroundColor: "#ffffff",
-          color: "#2b1600",
+          backgroundColor: "#FFFFFFfff",
+          color: "#242629",
           transform: "translate(-50%, -50%)",
         }}
         aria-label={`${label} — ${count} comments`}
