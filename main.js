@@ -578,6 +578,27 @@ const RAW_VENUES = [
       { id: "mcgillins-c16", author: "Jonah", text: "Free popcorn tubs everywhere.", upvotes: 10, downvotes: 0, time: "8:32pm", replies: [] },
       { id: "mcgillins-c17", author: "Adi", text: "Vintage photos being passed around tables.", upvotes: 9, downvotes: 0, time: "8:27pm", replies: [] },
       { id: "mcgillins-c18", author: "Lane", text: "Live fiddle duo warming up for later.", upvotes: 13, downvotes: 0, time: "8:23pm", replies: [] },
+      { id: "mcgillins-c19", author: "Vic", text: "Bartenders doing flair tricks between pours.", upvotes: 20, downvotes: 0, time: "8:20pm", replies: [] },
+      { id: "mcgillins-c20", author: "Gwen", text: "New pumpkin stout tapped a few minutes ago.", upvotes: 17, downvotes: 0, time: "8:18pm", replies: [] },
+      { id: "mcgillins-c21", author: "Nico", text: "Trivia master dropped hints on the chalkboard.", upvotes: 11, downvotes: 0, time: "8:15pm", replies: [] },
+      { id: "mcgillins-c22", author: "Hale", text: "Upstairs lounge has acoustic duo between rounds.", upvotes: 14, downvotes: 0, time: "8:12pm", replies: [] },
+      { id: "mcgillins-c23", author: "Suri", text: "Mini shepherd’s pies keep flying out of the oven.", upvotes: 13, downvotes: 0, time: "8:09pm", replies: [] },
+      { id: "mcgillins-c24", author: "Oli", text: "Photo booth props restocked near the stairwell.", upvotes: 9, downvotes: 0, time: "8:07pm", replies: [] },
+      { id: "mcgillins-c25", author: "Bex", text: "Coat check tagging system is super fast now.", upvotes: 8, downvotes: 0, time: "8:04pm", replies: [] },
+      { id: "mcgillins-c26", author: "Remy", text: "Ceiling fans finally slowed—air feels perfect.", upvotes: 10, downvotes: 0, time: "8:01pm", replies: [] },
+      { id: "mcgillins-c27", author: "Inez", text: "Karaoke sign-up clipboard already half full.", upvotes: 12, downvotes: 0, time: "7:58pm", replies: [] },
+      { id: "mcgillins-c28", author: "Casey", text: "They’re handing out glow wristbands at the door.", upvotes: 16, downvotes: 0, time: "7:55pm", replies: [] },
+      { id: "mcgillins-c29", author: "Aria", text: "Trivia prizes include custom pint glasses tonight.", upvotes: 15, downvotes: 0, time: "7:52pm", replies: [] },
+      { id: "mcgillins-c30", author: "Zora", text: "Outdoor alley strung with brand-new lights.", upvotes: 13, downvotes: 0, time: "7:49pm", replies: [] },
+      { id: "mcgillins-c31", author: "Eamon", text: "DJ spinning 90s hits between question rounds.", upvotes: 18, downvotes: 0, time: "7:46pm", replies: [] },
+      { id: "mcgillins-c32", author: "Liv", text: "Restrooms stocked with extra toiletries—nice touch.", upvotes: 7, downvotes: 0, time: "7:44pm", replies: [] },
+      { id: "mcgillins-c33", author: "Quin", text: "House-made pretzel bites getting rave reviews.", upvotes: 14, downvotes: 0, time: "7:41pm", replies: [] },
+      { id: "mcgillins-c34", author: "Seth", text: "Bartop camera streaming trivia stats on screens.", upvotes: 9, downvotes: 0, time: "7:38pm", replies: [] },
+      { id: "mcgillins-c35", author: "Mira", text: "Line for selfies with the mascot is forming.", upvotes: 11, downvotes: 0, time: "7:35pm", replies: [] },
+      { id: "mcgillins-c36", author: "Talia", text: "Fireplace seating finally open, super cozy.", upvotes: 10, downvotes: 0, time: "7:33pm", replies: [] },
+      { id: "mcgillins-c37", author: "Jonas", text: "Sound mix perfectly balanced across the hall.", upvotes: 13, downvotes: 0, time: "7:30pm", replies: [] },
+      { id: "mcgillins-c38", author: "Rafi", text: "They’re printing scores in real time on coasters.", upvotes: 12, downvotes: 0, time: "7:27pm", replies: [] },
+      { id: "mcgillins-c39", author: "Lark", text: "Trivia finals trophy on display by the stage.", upvotes: 17, downvotes: 0, time: "7:24pm", replies: [] },
     ],
   },
   {
@@ -1056,6 +1077,8 @@ const DEFAULT_SAVED_PLACES = ["cbp", "theatre", "smokey"]
   })
   .filter(Boolean);
 
+const DEFAULT_ALERTED_VENUES = ["cbp", "smokey"];
+
 function MyPlacesScreen({
   savedPlaces,
   onRemoveSaved,
@@ -1351,7 +1374,7 @@ function MapExperience({
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
   const [sheetState, setSheetState] = React.useState("closed");
-  const [alertedVenues, setAlertedVenues] = React.useState([]);
+  const [alertedVenues, setAlertedVenues] = React.useState(() => [...DEFAULT_ALERTED_VENUES]);
 
   React.useEffect(() => {
     if (onSheetVisibilityChange) {
