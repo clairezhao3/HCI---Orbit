@@ -525,14 +525,10 @@
     }
 
     .icon-btn.icon-btn-alert-active {
-      background: #4da3ff;
-      border-color: #4da3ff;
-      color: #0c1620;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-    }
-
-    .icon-btn.icon-btn-alert-active span.material-symbols-outlined {
-      color: #0c1620;
+      background: rgba(12,18,25,0.5);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: var(--accent-light);
+      box-shadow: none;
     }
 
     .sheet-info {
@@ -752,6 +748,18 @@
     .place-row-address {
       font-size: 14px;
       opacity: 0.85;
+    }
+
+    .nearby-minute-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .nearby-minute-icon {
+      font-size: 18px;
+      line-height: 1;
     }
 
     .remove-icon-btn {
