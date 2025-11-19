@@ -548,10 +548,8 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: -40,
     yPct: -40,
-    lat: 39.9496,
-    lng: -75.1632,
-    lat: 39.9531,
-    lng: -75.2013,
+    lat: 39.95369099522535,
+    lng: -75.20287546611156,
     details: {
       event: "Student Night",
       date: "09/18/2025",
