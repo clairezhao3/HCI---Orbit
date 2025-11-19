@@ -384,6 +384,21 @@ function bubbleSize(count, {min=25, max=80} = {}) {
 
 const MAX_INITIAL_COMMENTS = Infinity;
 
+const MAP_BOUNDS = {
+  north: 39.92,
+  south: 39.86,
+  west: -75.23,
+  east: -75.12,
+};
+
+function percentToLatLng(xPct = 0, yPct = 0) {
+  const latSpan = MAP_BOUNDS.north - MAP_BOUNDS.south;
+  const lngSpan = MAP_BOUNDS.east - MAP_BOUNDS.west;
+  const lat = MAP_BOUNDS.north - (yPct / 100) * latSpan;
+  const lng = MAP_BOUNDS.west + (xPct / 100) * lngSpan;
+  return { lat, lng };
+}
+
 const RAW_VENUES = [
   {
     id: "cbp",
@@ -391,6 +406,8 @@ const RAW_VENUES = [
     icon: "stadium",
     xPct: 50,
     yPct: 40,
+    lat: 39.9057,
+    lng: -75.1665,
     details: {
       event: "Concert with The Lumineers",
       date: "09/19/2025",
@@ -441,6 +458,8 @@ const RAW_VENUES = [
     icon: "stadium",
     xPct: 50,
     yPct: 95,
+    lat: 39.9008,
+    lng: -75.1675,
     initialCount: 36,
     details: {
       event: "Eagles Open Practice",
@@ -511,6 +530,8 @@ const RAW_VENUES = [
     icon: "stadia_controller",
     xPct: 85,
     yPct: 74,
+    lat: 39.9012,
+    lng: -75.172,
     details: {
       event: "Monster Jam Qualifiers",
       date: "09/25/2025",
@@ -527,6 +548,10 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: -40,
     yPct: -40,
+    lat: 39.9496,
+    lng: -75.1632,
+    lat: 39.9531,
+    lng: -75.2013,
     details: {
       event: "Student Night",
       date: "09/18/2025",
@@ -547,6 +572,10 @@ const RAW_VENUES = [
     icon: "music_note",
     xPct: -40,
     yPct: -40,
+    lat: 39.9597,
+    lng: -75.152,
+    lat: 39.9409,
+    lng: -75.1492,
     details: {
       event: "All Time Low — Special Set",
       date: "09/21/2025",
@@ -673,6 +702,8 @@ const RAW_VENUES = [
     icon: "museum",
     xPct: -40,
     yPct: -40,
+    lat: 39.9656,
+    lng: -75.1809,
     initialCount: 27,
     details: {
       event: "Late Night Exhibit Tour",
@@ -705,6 +736,8 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: 8,
     yPct: 60,
+    lat: 39.9049,
+    lng: -75.1738,
     initialCount: 18,
     details: {
       event: "Game Day Watch Party",
@@ -743,6 +776,8 @@ const RAW_VENUES = [
     icon: "casino",
     xPct: 72,
     yPct: 7,
+    lat: 39.9043,
+    lng: -75.1697,
     initialCount: 17,
     details: {
       event: "High Roller Roulette",
@@ -780,6 +815,8 @@ const RAW_VENUES = [
     icon: "local_bar",
     xPct: 76,
     yPct: 52,
+    lat: 39.9064,
+    lng: -75.1652,
     initialCount: 15,
     details: {
       event: "Post-Game Cocktails",
@@ -811,6 +848,8 @@ const RAW_VENUES = [
     icon: "directions_run",
     xPct: 83,
     yPct: 32,
+    lat: 39.9047,
+    lng: -75.1726,
     initialCount: 12,
     details: {
       event: "Fan Fest",
@@ -842,6 +881,8 @@ const RAW_VENUES = [
     icon: "local_pizza",
     xPct: 25,
     yPct: 58,
+    lat: 39.9059,
+    lng: -75.1662,
     initialCount: 9,
     details: {
       event: "Wood-Fired Slice Showcase",
@@ -870,6 +911,8 @@ const RAW_VENUES = [
     icon: "restaurant",
     xPct: 30,
     yPct: 32,
+    lat: 39.9066,
+    lng: -75.1658,
     initialCount: 5,
     details: {
       event: "Smoker Showcase",
@@ -891,6 +934,8 @@ const RAW_VENUES = [
     icon: "lunch_dining",
     xPct: 52,
     yPct: 58,
+    lat: 39.9053,
+    lng: -75.1719,
     initialCount: 2,
     details: {
       event: "Game Night Custard Drop",
@@ -910,10 +955,16 @@ const RAW_VENUES = [
 
 const INITIAL_VENUES = RAW_VENUES.map((venue) => {
   const comments = (venue.comments || []).slice(0, MAX_INITIAL_COMMENTS);
+  const hasCoords =
+    typeof venue.lat === "number" && typeof venue.lng === "number";
+  const position = hasCoords
+    ? { lat: venue.lat, lng: venue.lng }
+    : percentToLatLng(venue.xPct, venue.yPct);
   return {
     ...venue,
     comments,
     count: comments.length,
+    position,
   };
 });
 
@@ -928,28 +979,6 @@ const QUICK_ACTIONS = [
     opensLink: true,
   },
 ];
-  
-function Pin({ xPct, yPct, count, label, onClick }) {
-    const size = bubbleSize(count);
-    return (
-      <button
-        className="pin"
-        style={{
-          left: `${xPct}%`,
-          top: `${yPct}%`,
-          width: size,
-          height: size,
-          backgroundColor: "#FFFFFF",
-          color: "#242629",
-          transform: "translate(-50%, -50%)",
-        }}
-        aria-label={`${label} — ${count} comments`}
-        onClick={onClick}
-      >
-        <span className="pin-count">{count}</span>
-      </button>
-    );
-}
   
 const RECENT_PLACES = [
   { id: "recent-cbp", title: "Citizens Bank Park", city: "Philadelphia", venueId: "cbp" },
@@ -1041,7 +1070,14 @@ const ALERTS = [
 const USER_LOCATION = {
   xPct: 38,
   yPct: 72,
+  lat: 39.9042,
+  lng: -75.1717,
 };
+
+const USER_LOCATION_COORDS =
+  typeof USER_LOCATION.lat === "number" && typeof USER_LOCATION.lng === "number"
+    ? { lat: USER_LOCATION.lat, lng: USER_LOCATION.lng }
+    : percentToLatLng(USER_LOCATION.xPct, USER_LOCATION.yPct);
 
 function PlaceRow({ place, onActivate, removable = false, onRemove }) {
   const clickable = typeof onActivate === "function";
@@ -1729,7 +1765,7 @@ function MapExperience({
     <div className="map-layout">
       <SearchOverlay onShowVenue={handleSearchSelect} />
       <div className="map-viewport">
-        <MapStatic venues={venues} onSelectVenue={handleVenueSelect} />
+        <MapLeaflet venues={venues} onSelectVenue={handleVenueSelect} />
         <BottomSheet
           venue={selectedVenue}
           state={sheetState}
@@ -1751,30 +1787,110 @@ function MapExperience({
   );
 }
 
-function MapStatic({ venues, onSelectVenue }) {
+function MapLeaflet({ venues, onSelectVenue }) {
+  const containerRef = React.useRef(null);
+  const mapRef = React.useRef(null);
+  const markersRef = React.useRef([]);
+  const hasFitRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!containerRef.current || mapRef.current || !window.L) return;
+    const { lat, lng } = USER_LOCATION_COORDS;
+    const mapInstance = window.L.map(containerRef.current, {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: false,
+    });
+
+    window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 19,
+    }).addTo(mapInstance);
+
+    window.L.control.zoom({ position: "topright" }).addTo(mapInstance);
+
+    window.L.circleMarker([lat, lng], {
+      radius: 8,
+      color: "#FFFFFF",
+      weight: 3,
+      fillColor: "#415A72",
+      fillOpacity: 1,
+    })
+      .addTo(mapInstance)
+      .bindTooltip("You are here", { permanent: false });
+
+    mapRef.current = mapInstance;
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const mapInstance = mapRef.current;
+    const L = window.L;
+    if (!mapInstance || !L) return;
+
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
+    venues.forEach((venue) => {
+      if (!venue?.position) return;
+      const { lat, lng } = venue.position;
+      const size = bubbleSize(venue.count ?? 0);
+      const icon = L.divIcon({
+        className: "map-pin-icon",
+        html: `<div class="map-pin" style="width:${size}px;height:${size}px;"><span class="map-pin-count">${venue.count}</span></div>`,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      });
+      const marker = L.marker([lat, lng], {
+        icon,
+        title: `${venue.name} — ${venue.count} comments`,
+        keyboard: true,
+      });
+      marker.on("click", () => onSelectVenue(venue));
+      marker.addTo(mapInstance);
+      markersRef.current.push(marker);
+    });
+  }, [venues, onSelectVenue]);
+
+  React.useEffect(() => {
+    const mapInstance = mapRef.current;
+    const L = window.L;
+    if (!mapInstance || !L || hasFitRef.current) return;
+    const latLngs = venues
+      .map((venue) =>
+        venue?.position ? [venue.position.lat, venue.position.lng] : null
+      )
+      .filter(Boolean);
+    if (!latLngs.length) return;
+    const bounds = L.latLngBounds(latLngs);
+    bounds.extend([USER_LOCATION_COORDS.lat, USER_LOCATION_COORDS.lng]);
+    mapInstance.fitBounds(bounds, { padding: [24, 24], maxZoom: 16 });
+    hasFitRef.current = true;
+  }, [venues]);
+
+  if (!window.L) {
+    return (
+      <div className="map-leaflet" aria-label="Map unavailable">
+        Loading map…
+      </div>
+    );
+  }
+
   return (
-    <div className="map-wrap">
-      <div className="map-static" />
-      <div
-        className="user-location-dot"
-        style={{
-          left: `${USER_LOCATION.xPct}%`,
-          top: `${USER_LOCATION.yPct}%`,
-        }}
-        role="img"
-        aria-label="Your location"
-      />
-      {venues.map((v) => (
-        <Pin
-          key={v.id}
-          xPct={v.xPct}
-          yPct={v.yPct}
-          count={v.count}
-          label={v.name}
-          onClick={() => onSelectVenue(v)}
-        />
-      ))}
-    </div>
+    <div
+      ref={containerRef}
+      className="map-leaflet"
+      role="application"
+      aria-label="Interactive map"
+    />
   );
 }
 
