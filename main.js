@@ -396,6 +396,10 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "9:00PM EST",
       address: "One Citizens Bank Way, Philadelphia, PA 19148",
+      links: {
+        website: "https://www.mlb.com/phillies/ballpark",
+        tickets: "https://www.mlb.com/phillies/tickets",
+      },
     },
     comments: [
       {
@@ -443,6 +447,10 @@ const RAW_VENUES = [
       date: "09/20/2025",
       time: "10:00AM EST",
       address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
+      links: {
+        website: "https://www.lincolnfinancialfield.com/",
+        tickets: "https://www.lincolnfinancialfield.com/tickets/",
+      },
     },
     comments: [
       { id: "c11", author: "Rob", text: "Security lines are moving fast.", upvotes: 42, downvotes: 0, time: "9:05am", replies: [] },
@@ -524,6 +532,9 @@ const RAW_VENUES = [
       date: "09/18/2025",
       time: "11:30PM EST",
       address: "210 S 40th St, Philadelphia, PA 19104",
+      links: {
+        website: "https://www.smokeyjoesbar.com/",
+      },
     },
     comments: [
       { id: "c14", author: "Jess", text: "Line wraps around the corner right now.", upvotes: 22, downvotes: 1, time: "11:35pm", replies: [] },
@@ -541,6 +552,10 @@ const RAW_VENUES = [
       date: "09/21/2025",
       time: "8:00PM EST",
       address: "334 South St, Philadelphia, PA 19147",
+      links: {
+        website: "https://www.tlaphilly.com/",
+        tickets: "https://www.tlaphilly.com/shows",
+      },
     },
     comments: [
       { id: "c16", author: "Priya", text: "Doors just opened and merch is stocked.", upvotes: 12, downvotes: 0, time: "7:15pm", replies: [] },
@@ -558,6 +573,9 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "9:00PM EST",
       address: "1510 Drury St, Philadelphia, PA 19107",
+      links: {
+        website: "https://mcgillins.com/",
+      },
     },
     comments: [
       { id: "mcgillins-c1", author: "Kelly", text: "Second round questions are tough!", upvotes: 31, downvotes: 0, time: "9:25pm", replies: [] },
@@ -613,6 +631,10 @@ const RAW_VENUES = [
       date: "09/22/2025",
       time: "9:30PM EST",
       address: "421 N 7th St, Philadelphia, PA 19123",
+      links: {
+        website: "https://franklinmusichall.com/",
+        tickets: "https://franklinmusichall.com/events/detail/?event_id=972129",
+      },
     },
     comments: [
       { id: "franklin-c1", author: "Marco", text: "Light check happening now.", upvotes: 18, downvotes: 0, time: "8:55pm", replies: [] },
@@ -657,6 +679,10 @@ const RAW_VENUES = [
       date: "09/21/2025",
       time: "7:30PM EST",
       address: "2600 Benjamin Franklin Pkwy, Philadelphia, PA 19130",
+      links: {
+        website: "https://www.visitpham.org/",
+        tickets: "https://www.visitpham.org/tickets?keyword=Admission",
+      },
     },
     comments: [
       { id: "artmuseum-c1", author: "Andrea", text: "Great photo ops in the modern wing tonight.", upvotes: 44, downvotes: 0, time: "7:40pm", replies: [] },
@@ -685,6 +711,10 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "8:00PM EST",
       address: "900 Packer Ave, Philadelphia, PA 19148",
+      links: {
+        website: "https://www.statesidelive.com/?utm_source=ppc&keyword=stateside%20live&matchtype=p&network=g&devicemodel=&loc_interest_ms=&gad_source=1&gad_campaignid=22771575494&gbraid=0AAAAAD_GASYnQCu3QQy0WhynuFe9_acIW&gclid=EAIaIQobChMIqfy_6aT_kAMVM19HAR2InBRZEAAYASAAEgJXbvD_BwE",
+        tickets: "https://www.axs.com/venues/128137/stateside-live-philadelphia-tickets?cid=website_homepage_button",
+      },
     },
     comments: [
       { id: "stateside-c1", author: "Jordan", text: "House band just kicked off a Springsteen cover.", upvotes: 14, downvotes: 0, time: "8:12pm", replies: [] },
@@ -719,6 +749,10 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "10:00PM EST",
       address: "900 Packer Ave, Philadelphia, PA 19148",
+      links: {
+        website: "https://www.livech.com/Philadelphia",
+        tickets: "https://www.livech.com/Philadelphia/Events-and-Shows?endDate=&query=&startDate=&type=Headliners,Live%20Music",
+      },
     },
     comments: [
       { id: "livecasino-c1", author: "Ash", text: "Roulette tables are three deep right now.", upvotes: 18, downvotes: 1, time: "9:48pm", replies: [] },
@@ -783,6 +817,9 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "5:00PM EST",
       address: "3601 S Broad St, Philadelphia, PA 19148",
+      links: {
+        website: "https://scssd.org/sports-complex-info/",
+      },
     },
     comments: [
       { id: "sportscomplex-c1", author: "Leo", text: "Obstacle course is open to all ages now.", upvotes: 8, downvotes: 0, time: "5:40pm", replies: [] },
@@ -811,6 +848,9 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "7:00PM EST",
       address: "1 Citizens Bank Way, Philadelphia, PA 19148",
+      links: {
+        website: "https://www.mlb.com/phillies/ballpark/pass-and-stow",
+      },
     },
     comments: [
       { id: "passandstow-c1", author: "Drew", text: "Pepperoni special is selling out quick.", upvotes: 9, downvotes: 0, time: "7:20pm", replies: [] },
@@ -857,6 +897,9 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "8:30PM EST",
       address: "3500 S Broad St, Philadelphia, PA 19148",
+      links: {
+        website: "https://shakeshack.com/?utm_source=google&utm_medium=paidsearch&utm_campaign=search_br_conversion_go_text_x_exact&utm_adgroup=conversion_x_core_br&utm_keyword=shakeshack&gad_source=1&gad_campaignid=21776710795&gbraid=0AAAAADRyPRXWhkkOMJrbSbKSrYO_Bq64i&gclid=EAIaIQobChMIwartzaT_kAMVi2lHAR3rlQHPEAAYASABEgJ27_D_BwE#/",
+      },
     },
     comments: [
       { id: "shakeshack-c1", author: "Olive", text: "Choco-peanut custard just hit the machines.", upvotes: 5, downvotes: 0, time: "8:36pm", replies: [] },
@@ -877,8 +920,13 @@ const INITIAL_VENUES = RAW_VENUES.map((venue) => {
 const QUICK_ACTIONS = [
   { id: "walk", icon: "directions_walk", label: "5 min" },
   { id: "call", icon: "call", label: "Call" },
-  { id: "website", icon: "language", label: "Website" },
-  { id: "tickets", icon: "confirmation_number", label: "Tickets" },
+  { id: "website", icon: "language", label: "Website", opensLink: true },
+  {
+    id: "tickets",
+    icon: "confirmation_number",
+    label: "Tickets",
+    opensLink: true,
+  },
 ];
   
 function Pin({ xPct, yPct, count, label, onClick }) {
@@ -2068,7 +2116,19 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
     .join(" ");
 
   const details = venue?.details || {};
+  const quickActionLinks = details.links || {};
   const comments = venue?.comments || [];
+
+  const handleQuickAction = (action) => {
+    if (!venue) return;
+    if (action.opensLink) {
+      const url = quickActionLinks[action.id];
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+      return;
+    }
+  };
 
   return (
     <div 
@@ -2139,12 +2199,22 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
             <div className="info-value">{details.address}</div>
           </div>
           <div className="sheet-quick-actions">
-            {QUICK_ACTIONS.map((action) => (
-              <button key={action.id} className="quick-action">
-                <span className="material-symbols-outlined">{action.icon}</span>
-                <span>{action.label}</span>
-              </button>
-            ))}
+            {QUICK_ACTIONS.map((action) => {
+              const requiresLink = Boolean(action.opensLink);
+              const hasLink = Boolean(quickActionLinks[action.id]);
+              const disabled = requiresLink && !hasLink;
+              return (
+                <button
+                  key={action.id}
+                  className="quick-action"
+                  onClick={() => handleQuickAction(action)}
+                  disabled={disabled}
+                >
+                  <span className="material-symbols-outlined">{action.icon}</span>
+                  <span>{action.label}</span>
+                </button>
+              );
+            })}
           </div>
             <div className="sheet-comments">
             <div className="sheet-comments-header">Comment</div>
