@@ -112,6 +112,7 @@ function App() {
     const [venues, setVenues] = React.useState(INITIAL_VENUES);
     const [savedPlaces, setSavedPlaces] = React.useState(DEFAULT_SAVED_PLACES);
     const [pendingVenueId, setPendingVenueId] = React.useState(null);
+    const [callPrompt, setCallPrompt] = React.useState(null);
     const popularPlaces = React.useMemo(
       () => buildPopularNow(venues),
       [venues]
@@ -193,11 +194,21 @@ function App() {
                   onToggleSavePlace={handleToggleSavePlace}
                   openVenueId={pendingVenueId}
                   onExternalVenueHandled={handleExternalVenueHandled}
+                  onRequestCall={(payload) =>
+                    setCallPrompt(payload ?? { number: "02836392" })
+                  }
                 />
               ) : null
             }
           />
         </KeyboardContext.Provider>
+        {callPrompt ? (
+          <CallPrompt
+            number={callPrompt.number}
+            onCancel={() => setCallPrompt(null)}
+            onConfirm={() => setCallPrompt(null)}
+          />
+        ) : null}
         <div className={`tabbar-wrapper ${sheetOpen ? "collapsed" : ""}`}>
           <NavBar value={tab} onChange={setTab} />
         </div>
@@ -413,6 +424,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "9:00PM EST",
       address: "One Citizens Bank Way, Philadelphia, PA 19148",
+      phone: "215-463-1000",
       links: {
         website: "https://www.mlb.com/phillies/ballpark",
         tickets: "https://www.mlb.com/phillies/tickets",
@@ -466,6 +478,7 @@ const RAW_VENUES = [
       date: "09/20/2025",
       time: "10:00AM EST",
       address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
+      phone: "(215) 463-5500",
       links: {
         website: "https://www.lincolnfinancialfield.com/",
         tickets: "https://www.lincolnfinancialfield.com/tickets/",
@@ -555,6 +568,7 @@ const RAW_VENUES = [
       date: "09/18/2025",
       time: "11:30PM EST",
       address: "210 S 40th St, Philadelphia, PA 19104",
+      phone: "(215) 222-0770",
       links: {
         website: "https://www.smokeyjoesbar.com/",
       },
@@ -570,15 +584,14 @@ const RAW_VENUES = [
     icon: "music_note",
     xPct: -40,
     yPct: -40,
-    lat: 39.9597,
-    lng: -75.152,
-    lat: 39.9409,
-    lng: -75.1492,
+    lat: 39.941469137834595,
+    lng: -75.14870146654921,
     details: {
       event: "All Time Low — Special Set",
       date: "09/21/2025",
       time: "8:00PM EST",
       address: "334 South St, Philadelphia, PA 19147",
+      phone: "(215) 922-1011",
       links: {
         website: "https://www.tlaphilly.com/",
         tickets: "https://www.tlaphilly.com/shows",
@@ -594,12 +607,15 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: -40,
     yPct: -40,
+    lat: 39.95022934663799,
+    lng: -75.16259267163105,
     initialCount: 31,
     details: {
       event: "Trivia Night Finals",
       date: "09/19/2025",
       time: "9:00PM EST",
       address: "1510 Drury St, Philadelphia, PA 19107",
+      phone: "+12157355562",
       links: {
         website: "https://mcgillins.com/",
       },
@@ -652,12 +668,15 @@ const RAW_VENUES = [
     icon: "music_note",
     xPct: -40,
     yPct: -40,
+    lat: 39.95906687514431,
+    lng: -75.1498149559531,
     initialCount: 28,
     details: {
       event: "Electronic Showcase",
       date: "09/22/2025",
       time: "9:30PM EST",
       address: "421 N 7th St, Philadelphia, PA 19123",
+      phone: "(215) 627-1332",
       links: {
         website: "https://franklinmusichall.com/",
         tickets: "https://franklinmusichall.com/events/detail/?event_id=972129",
@@ -708,6 +727,7 @@ const RAW_VENUES = [
       date: "09/21/2025",
       time: "7:30PM EST",
       address: "2600 Benjamin Franklin Pkwy, Philadelphia, PA 19130",
+      phone: "(215) 763-8100",
       links: {
         website: "https://www.visitpham.org/",
         tickets: "https://www.visitpham.org/tickets?keyword=Admission",
@@ -742,6 +762,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "8:00PM EST",
       address: "900 Packer Ave, Philadelphia, PA 19148",
+      phone: "215-372-7000",
       links: {
         website: "https://www.statesidelive.com/?utm_source=ppc&keyword=stateside%20live&matchtype=p&network=g&devicemodel=&loc_interest_ms=&gad_source=1&gad_campaignid=22771575494&gbraid=0AAAAAD_GASYnQCu3QQy0WhynuFe9_acIW&gclid=EAIaIQobChMIqfy_6aT_kAMVM19HAR2InBRZEAAYASAAEgJXbvD_BwE",
         tickets: "https://www.axs.com/venues/128137/stateside-live-philadelphia-tickets?cid=website_homepage_button",
@@ -782,6 +803,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "10:00PM EST",
       address: "900 Packer Ave, Philadelphia, PA 19148",
+      phone: "833-472-5483",
       links: {
         website: "https://www.livech.com/Philadelphia",
         tickets: "https://www.livech.com/Philadelphia/Events-and-Shows?endDate=&query=&startDate=&type=Headliners,Live%20Music",
@@ -854,6 +876,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "5:00PM EST",
       address: "3601 S Broad St, Philadelphia, PA 19148",
+      phone: "(215) 271-1701",
       links: {
         website: "https://scssd.org/sports-complex-info/",
       },
@@ -887,6 +910,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "7:00PM EST",
       address: "1 Citizens Bank Way, Philadelphia, PA 19148",
+      phone: "215-463-1000",
       links: {
         website: "https://www.mlb.com/phillies/ballpark/pass-and-stow",
       },
@@ -940,6 +964,7 @@ const RAW_VENUES = [
       date: "09/19/2025",
       time: "8:30PM EST",
       address: "3500 S Broad St, Philadelphia, PA 19148",
+      phone: "(800) 937-5449",
       links: {
         website: "https://shakeshack.com/?utm_source=google&utm_medium=paidsearch&utm_campaign=search_br_conversion_go_text_x_exact&utm_adgroup=conversion_x_core_br&utm_keyword=shakeshack&gad_source=1&gad_campaignid=21776710795&gbraid=0AAAAADRyPRXWhkkOMJrbSbKSrYO_Bq64i&gclid=EAIaIQobChMIwartzaT_kAMVi2lHAR3rlQHPEAAYASABEgJ27_D_BwE#/",
       },
@@ -1068,8 +1093,8 @@ const ALERTS = [
 const USER_LOCATION = {
   xPct: 38,
   yPct: 72,
-  lat: 39.9042,
-  lng: -75.1717,
+  lat: 39.90332473656186,
+  lng: -75.16647374581213,
 };
 
 const USER_LOCATION_COORDS =
@@ -1452,6 +1477,7 @@ function MapExperience({
   onToggleSavePlace,
   openVenueId,
   onExternalVenueHandled,
+  onRequestCall,
 }) {
   const [userVotes, setUserVotes] = React.useState({});
   const [selectedVenue, setSelectedVenue] = React.useState(null);
@@ -1779,6 +1805,7 @@ function MapExperience({
           isSaved={isSelectedSaved}
           onToggleAlerts={handleToggleAlerts}
           isAlertsEnabled={isSelectedAlerted}
+          onRequestCall={onRequestCall}
         />
       </div>
     </div>
@@ -1790,13 +1817,15 @@ function MapLeaflet({ venues, onSelectVenue }) {
   const mapRef = React.useRef(null);
   const markersRef = React.useRef([]);
   const hasFitRef = React.useRef(false);
+  const userMarkerRef = React.useRef(null);
+  const DEFAULT_ZOOM = 17;
 
   React.useEffect(() => {
     if (!containerRef.current || mapRef.current || !window.L) return;
     const { lat, lng } = USER_LOCATION_COORDS;
     const mapInstance = window.L.map(containerRef.current, {
       center: [lat, lng],
-      zoom: 14,
+      zoom: DEFAULT_ZOOM,
       zoomControl: false,
     });
 
@@ -1807,15 +1836,25 @@ function MapLeaflet({ venues, onSelectVenue }) {
 
     window.L.control.zoom({ position: "topright" }).addTo(mapInstance);
 
-    window.L.circleMarker([lat, lng], {
-      radius: 8,
-      color: "#FFFFFF",
-      weight: 3,
-      fillColor: "#415A72",
-      fillOpacity: 1,
+    const userIcon = window.L.divIcon({
+      className: "map-user-location-icon",
+      html: '<div class="user-location-dot"></div>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+
+    const userMarker = window.L.marker([lat, lng], {
+      icon: userIcon,
+      interactive: false,
+      keyboard: false,
+      zIndexOffset: 1000,
+      opacity: 1,
     })
       .addTo(mapInstance)
       .bindTooltip("You are here", { permanent: false });
+
+    userMarkerRef.current = userMarker;
+    hasFitRef.current = true;
 
     mapRef.current = mapInstance;
   }, []);
@@ -1825,6 +1864,10 @@ function MapLeaflet({ venues, onSelectVenue }) {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+      }
+      if (userMarkerRef.current) {
+        userMarkerRef.current.remove();
+        userMarkerRef.current = null;
       }
     };
   }, []);
@@ -1889,6 +1932,29 @@ function MapLeaflet({ venues, onSelectVenue }) {
       role="application"
       aria-label="Interactive map"
     />
+  );
+}
+
+function CallPrompt({ number = "02836392", onCancel, onConfirm }) {
+  return (
+    <div className="call-overlay">
+      <div
+        className="call-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Call confirmation"
+      >
+        <div className="call-number">{number}</div>
+        <div className="call-actions">
+          <button type="button" onClick={onCancel} className="call-action cancel">
+            Cancel
+          </button>
+          <button type="button" onClick={onConfirm} className="call-action confirm">
+            Call
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -2168,7 +2234,7 @@ function Comment({ comment, venueId, onAddReply, onEditComment, onDeleteComment,
   );
 }
 
-function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes, onToggleSave, isSaved, onToggleAlerts, isAlertsEnabled }) {
+function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEditComment, onDeleteComment, onAddReply, onVote, userVotes, onToggleSave, isSaved, onToggleAlerts, isAlertsEnabled, onRequestCall }) {
   const dragRef = React.useRef({ startY: 0, state: "closed" });
   const [commentText, setCommentText] = React.useState("");
   const [isCommentFocused, setIsCommentFocused] = React.useState(false);
@@ -2240,8 +2306,16 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
       if (url) {
         window.open(url, "_blank", "noopener,noreferrer");
       }
+    return;
+  }
+  if (action.id === "call") {
+    const phone = venue.details?.phone || venue.details?.contact;
+    if (!phone) {
       return;
     }
+    onRequestCall?.({ number: phone, venue });
+    return;
+  }
   };
 
   return (
@@ -2316,13 +2390,17 @@ function BottomSheet({ venue, state, onStateChange, onClose, onAddComment, onEdi
             {QUICK_ACTIONS.map((action) => {
               const requiresLink = Boolean(action.opensLink);
               const hasLink = Boolean(quickActionLinks[action.id]);
+              const requiresPhone = action.id === "call";
+              const hasPhone = Boolean(
+                venue?.details?.phone || venue?.details?.contact
+              );
               const disabled = requiresLink && !hasLink;
               return (
                 <button
                   key={action.id}
                   className="quick-action"
                   onClick={() => handleQuickAction(action)}
-                  disabled={disabled}
+                  disabled={disabled || (requiresPhone && !hasPhone)}
                 >
                   <span className="material-symbols-outlined">{action.icon}</span>
                   <span>{action.label}</span>

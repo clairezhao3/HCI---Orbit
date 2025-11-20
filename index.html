@@ -220,14 +220,65 @@
       padding: 2px 8px;
     }
 
+    .call-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .call-dialog {
+      background: #F7F7F7;
+      border-radius: 18px;
+      min-width: 260px;
+      padding: 16px 0 0;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      text-align: center;
+      font-family: "SF Pro Display","Fustat", system-ui, -apple-system, sans-serif;
+    }
+
+    .call-number {
+      font-size: 24px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 8px;
+      padding: 12px 16px 18px;
+    }
+
+    .call-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .call-action {
+      background: transparent;
+      border: 0;
+      padding: 8px 0;
+      font-size: 17px;
+      font-weight: 500;
+      color: #007AFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .call-action + .call-action {
+      border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
     /* Search overlay */
     .search-panel {
-      padding: 0 20px 0;
+      padding: 6px 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
-      min-height: 76px;
+      min-height: 64px;
     }
 
     .search-pill {
@@ -260,7 +311,7 @@
 
     .search-panel-spacer {
       padding: 0 20px;
-      min-height: 76px;
+      min-height: 64px;
       pointer-events: none;
     }
 
@@ -960,19 +1011,23 @@
       height: 100%;
     }
 
-    .user-location-dot {
-      position: absolute;
+    .map-user-location-icon {
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+
+    .map-user-location-icon .user-location-dot {
       width: 18px;
       height: 18px;
       border-radius: 50%;
       background: #415A72;
       border: 3px solid #FFFFFF;
       box-shadow: 0 0 10px rgba(77,163,255,0.65);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
+      position: relative;
     }
 
-    .user-location-dot::after {
+    .map-user-location-icon .user-location-dot::after {
       content: "";
       position: absolute;
       inset: -6px;
