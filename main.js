@@ -1431,17 +1431,6 @@ function SearchOverlay({ onShowVenue }) {
           </li>
         ))}
       </ul>
-      <div className="find-nearby">
-        <div className="find-title">Find Nearby</div>
-        <div className="nearby-grid">
-          {NEARBY_CATEGORIES.map((cat) => (
-            <button key={cat.id} type="button" className="nearby-chip">
-              <span className="material-symbols-outlined">{cat.icon}</span>
-              <span>{cat.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 
