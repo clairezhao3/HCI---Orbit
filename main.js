@@ -476,7 +476,7 @@ const RAW_VENUES = [
     details: {
       event: "Eagles Open Practice",
       date: "09/20/2025",
-      time: "10:00AM EST",
+      time: "8:30AM EST",
       address: "1 Lincoln Financial Field Way, Philadelphia, PA 19148",
       phone: "(215) 463-5500",
       links: {
@@ -547,8 +547,8 @@ const RAW_VENUES = [
     lng: -75.172,
     details: {
       event: "Monster Jam Qualifiers",
-      date: "09/25/2025",
-      time: "4:00PM EST",
+      date: "09/19/2025",
+      time: "10:15PM EST",
       address: "3601 S Broad St, Philadelphia, PA 19148",
     },
     comments: [
@@ -565,7 +565,7 @@ const RAW_VENUES = [
     lng: -75.20287546611156,
     details: {
       event: "Student Night",
-      date: "09/18/2025",
+      date: "09/19/2025",
       time: "11:30PM EST",
       address: "210 S 40th St, Philadelphia, PA 19104",
       phone: "(215) 222-0770",
@@ -588,8 +588,8 @@ const RAW_VENUES = [
     lng: -75.14870146654921,
     details: {
       event: "All Time Low — Special Set",
-      date: "09/21/2025",
-      time: "8:00PM EST",
+      date: "09/19/2025",
+      time: "10:30PM EST",
       address: "334 South St, Philadelphia, PA 19147",
       phone: "(215) 922-1011",
       links: {
@@ -673,7 +673,7 @@ const RAW_VENUES = [
     initialCount: 28,
     details: {
       event: "Electronic Showcase",
-      date: "09/22/2025",
+      date: "09/19/2025",
       time: "9:30PM EST",
       address: "421 N 7th St, Philadelphia, PA 19123",
       phone: "(215) 627-1332",
@@ -724,8 +724,8 @@ const RAW_VENUES = [
     initialCount: 27,
     details: {
       event: "Late Night Exhibit Tour",
-      date: "09/21/2025",
-      time: "7:30PM EST",
+      date: "09/19/2025",
+      time: "8:30PM EST",
       address: "2600 Benjamin Franklin Pkwy, Philadelphia, PA 19130",
       phone: "(215) 763-8100",
       links: {
@@ -754,8 +754,8 @@ const RAW_VENUES = [
     icon: "sports_bar",
     xPct: 8,
     yPct: 60,
-    lat: 39.9049,
-    lng: -75.1738,
+    lat: 39.9044,
+    lng: -75.1689,
     initialCount: 18,
     details: {
       event: "Game Day Watch Party",
@@ -795,8 +795,8 @@ const RAW_VENUES = [
     icon: "casino",
     xPct: 72,
     yPct: 7,
-    lat: 39.9043,
-    lng: -75.1697,
+    lat: 39.9089,
+    lng: -75.165,
     initialCount: 17,
     details: {
       event: "High Roller Roulette",
@@ -835,8 +835,8 @@ const RAW_VENUES = [
     icon: "local_bar",
     xPct: 76,
     yPct: 52,
-    lat: 39.9064,
-    lng: -75.1652,
+    lat: 39.9052,
+    lng: -75.168,
     initialCount: 15,
     details: {
       event: "Post-Game Cocktails",
@@ -868,13 +868,13 @@ const RAW_VENUES = [
     icon: "directions_run",
     xPct: 83,
     yPct: 32,
-    lat: 39.9047,
-    lng: -75.1726,
+    lat: 39.9067,
+    lng: -75.163,
     initialCount: 12,
     details: {
       event: "Fan Fest",
       date: "09/19/2025",
-      time: "5:00PM EST",
+      time: "8:05PM EST",
       address: "3601 S Broad St, Philadelphia, PA 19148",
       phone: "(215) 271-1701",
       links: {
@@ -902,13 +902,13 @@ const RAW_VENUES = [
     icon: "local_pizza",
     xPct: 25,
     yPct: 58,
-    lat: 39.9059,
-    lng: -75.1662,
+    lat: 39.9061,
+    lng: -75.1668,
     initialCount: 9,
     details: {
       event: "Wood-Fired Slice Showcase",
       date: "09/19/2025",
-      time: "7:00PM EST",
+      time: "8:20PM EST",
       address: "1 Citizens Bank Way, Philadelphia, PA 19148",
       phone: "215-463-1000",
       links: {
@@ -933,13 +933,13 @@ const RAW_VENUES = [
     icon: "restaurant",
     xPct: 30,
     yPct: 32,
-    lat: 39.9066,
-    lng: -75.1658,
+    lat: 39.9062,
+    lng: -75.1666,
     initialCount: 5,
     details: {
       event: "Smoker Showcase",
       date: "09/19/2025",
-      time: "6:30PM EST",
+      time: "8:25PM EST",
       address: "1 Citizens Bank Way, Philadelphia, PA 19148",
     },
     comments: [
@@ -956,8 +956,8 @@ const RAW_VENUES = [
     icon: "lunch_dining",
     xPct: 52,
     yPct: 58,
-    lat: 39.9053,
-    lng: -75.1719,
+    lat: 39.9003,
+    lng: -75.1694,
     initialCount: 2,
     details: {
       event: "Game Night Custard Drop",
