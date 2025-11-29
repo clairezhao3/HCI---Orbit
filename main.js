@@ -1339,6 +1339,7 @@ function SearchOverlay({ onShowVenue }) {
           id: `search-${venue.id}`,
           title: venue.name,
           city,
+          event: venue.details?.event || "",
           venueId: venue.id,
         };
       }),
@@ -1364,7 +1365,7 @@ function SearchOverlay({ onShowVenue }) {
     return pool
       .filter((item) => {
         if (!normalizedQuery) return true;
-        return `${item.title} ${item.city}`
+        return `${item.title} ${item.city} ${item.event || ""}`
           .toLowerCase()
           .includes(normalizedQuery);
       })
